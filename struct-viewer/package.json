@@ -1,0 +1,22 @@
+{
+  "name": "miliastra-struct-viewer",
+  "version": "0.1.0",
+  "private": true,
+  "type": "module",
+  "description": "千星奇域 结构体 / 结构体变量 与 JSON 在线互转与编辑工具",
+  "scripts": {
+    "dev": "vite",
+    "build": "vite build",
+    "preview": "vite preview",
+    "test": "vitest run"
+  },
+  "dependencies": {
+    "pinia": "^2.2.6",
+    "vue": "^3.5.13"
+  },
+  "devDependencies": {
+    "@vitejs/plugin-vue": "^5.2.1",
+    "vite": "^6.0.5",
+    "vitest": "^2.1.8"
+  }
+}
