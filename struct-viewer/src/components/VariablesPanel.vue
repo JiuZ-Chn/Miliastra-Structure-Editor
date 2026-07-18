@@ -93,8 +93,8 @@ function createFromDef(defId) {
 
     <div class="col-foot">
       <button class="primary" @click="pickDefOpen = !pickDefOpen">+ 新建变量</button>
-      <button @click="pickFile">从文件</button>
-      <button @click="importOpen = !importOpen">粘贴</button>
+      <button @click="pickFile">从文件导入</button>
+      <button @click="importOpen = !importOpen">从 JSON 导入</button>
       <input
         ref="fileInput"
         type="file"

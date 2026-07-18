@@ -88,8 +88,8 @@ function download(text, filename) {
 
     <div class="col-foot">
       <button class="primary" @click="store.addDefinition()">+ 新建</button>
-      <button @click="pickFile">从文件</button>
-      <button @click="importOpen = !importOpen">粘贴</button>
+      <button @click="pickFile">从文件导入</button>
+      <button @click="importOpen = !importOpen">从 JSON 导入</button>
       <select
         @change="store.loadSample($event.target.value); $event.target.value = ''"
         style="max-width:120px"

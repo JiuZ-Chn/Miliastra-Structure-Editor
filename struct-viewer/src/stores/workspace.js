@@ -153,7 +153,7 @@ export const useWorkspaceStore = defineStore('workspace', {
       if (!w) return
       const def = {
         id: nextId(),
-        structId: genStructId(),
+        structId: '',
         name: `结构体 ${w.definitions.length + 1}`,
         structType: 'basic',
         fields: []
@@ -180,7 +180,7 @@ export const useWorkspaceStore = defineStore('workspace', {
       this.persist()
     },
 
-    /** 导入结构体定义 JSON 到当前工作区 */
+    /** 导入结构体定义 JSON 到当前工作区（structId 由用户导入后填写） */
     importDefinition(text) {
       const w = this.activeWorkspace
       if (!w) throw new Error('请先选择或新建一个工作区')
@@ -188,14 +188,14 @@ export const useWorkspaceStore = defineStore('workspace', {
       const parsed = parseStructDefinition(obj)
       const def = {
         id: nextId(),
-        structId: genStructId(),
+        structId: '',
         name: parsed.name,
         structType: parsed.structType,
         fields: parsed.fields
       }
       w.definitions.push(def)
       this.selectDefinition(def.id)
-      this.message = `已导入结构体定义：${parsed.name}`
+      this.message = `已导入「${parsed.name}」，请为它填写 structId`
       this.persist()
     },
 

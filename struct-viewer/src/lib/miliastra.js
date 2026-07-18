@@ -1,15 +1,15 @@
 /**
  * 千星奇域 结构体 / 结构体变量 转换核心库
  *
- * 数据模型（依据实际样例 结构体.json / 结构体变量.json）：
+ * 数据模型（依据实际样例 简单结构体 / 复杂结构体 / 复杂结构体变量）：
  *
  * 结构体（Struct Definition，带字段名与类型的“模板/schema”）：
  * {
  *   "type": "Struct",
  *   "struct_ype": "basic",         // 样例原文如此拼写，保留以保持还原度
- *   "name": "刷怪点配置",
+ *   "name": "复杂结构体",
  *   "value": [
- *     { "key": "刷怪点索引", "param_type": "Int32",
+ *     { "key": "整数变量", "param_type": "Int32",
  *       "value": { "param_type": "Int32", "value": "0" } },
  *     ...
  *   ]
@@ -247,18 +247,6 @@ export function definitionToVariable(def, structId) {
   return buildStructVariable(model, structId)
 }
 
-/**
- * 结构体变量 + 字段模板 → 结构体定义（补回字段名）
- */
-export function variableToDefinition(variable, template, meta = {}) {
-  const parsed = parseStructVariable(variable, template)
-  return buildStructDefinition({
-    name: meta.name ?? '未命名结构体',
-    structType: meta.structType ?? 'basic',
-    fields: parsed.fields
-  })
-}
-
 /** 带缩进的 JSON 序列化 */
 export function toJSON(obj, space = 2) {
   return JSON.stringify(obj, null, space)
@@ -280,3 +268,27 @@ export function detectKind(obj) {
   if (obj.value.some((v) => v && typeof v === 'object' && 'key' in v)) return 'definition'
   return 'variable'
 }
+
+/** 列表类型 → 元素标量类型（如 Int32List → Int32） */
+export function listElementType(paramType) {
+  if (!paramType || !paramType.endsWith('List')) return 'String'
+  const base = paramType.slice(0, -'List'.length)
+  return PARAM_TYPE_META[base] ? base : 'String'
+}
+
+/**
+ * 由结构体定义生成一个“空的结构体变量值对象”（用于给 StructList / Dict 新增子项）。
+ * 返回形如 { structId, type:'Struct', value:[ {param_type, value} ] }
+ */
+export function blankStructValue(def) {
+  if (!def) return { structId: '', type: 'Struct', value: [] }
+  return {
+    structId: String(def.structId ?? ''),
+    type: 'Struct',
+    value: (def.fields ?? []).map((f) => ({
+      param_type: f.paramType,
+      value: JSON.parse(JSON.stringify(defaultValueForType(f.paramType)))
+    }))
+  }
+}
+
