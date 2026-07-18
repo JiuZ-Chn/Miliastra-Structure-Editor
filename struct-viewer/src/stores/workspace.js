@@ -268,6 +268,47 @@ export const useWorkspaceStore = defineStore('workspace', {
       this.persist()
     },
 
+    /** 复制一个变量（用于变量表批量创建） */
+    duplicateVariable(id) {
+      const w = this.activeWorkspace
+      if (!w) return
+      const idx = w.variables.findIndex((v) => v.id === id)
+      if (idx < 0) return
+      const v = w.variables[idx]
+      const copy = {
+        id: nextId(),
+        name: `${v.name} 副本`,
+        structId: v.structId,
+        defId: v.defId,
+        fields: cloneFields(v.fields)
+      }
+      w.variables.splice(idx + 1, 0, copy)
+      this.persist()
+    },
+
+    /** 用一批「名称 + 字段值」重建某个定义下的全部变量（变量表 TSV 应用） */
+    rebuildVariablesForDefinition(defId, rows) {
+      const w = this.activeWorkspace
+      if (!w) return
+      const def = w.definitions.find((d) => d.id === defId)
+      if (!def) return
+      // 移除该定义原有的变量
+      const kept = w.variables.filter((v) => !(v.defId === def.id || v.structId === def.structId))
+      const rebuilt = rows.map((r, ri) => ({
+        id: nextId(),
+        name: r.name || `${def.name} 变量 ${ri + 1}`,
+        structId: def.structId,
+        defId: def.id,
+        fields: def.fields.map((f, i) => ({
+          key: f.key,
+          paramType: f.paramType,
+          value: r.values[i]
+        }))
+      }))
+      w.variables = [...kept, ...rebuilt]
+      this.persist()
+    },
+
     /** 导入结构体变量 JSON（必须已导入同 structId 的结构体定义） */
     importVariable(text) {
       const w = this.activeWorkspace

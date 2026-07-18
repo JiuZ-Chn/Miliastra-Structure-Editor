@@ -3,12 +3,17 @@ import { ref, computed, watch, provide } from 'vue'
 import { useWorkspaceStore } from '../stores/workspace.js'
 import { toJSON } from '../lib/miliastra.js'
 import FrameView from './FrameView.vue'
+import VariableTable from './VariableTable.vue'
 
 const store = useWorkspaceStore()
 
 const target = computed(() => store.editingTarget)
 const isDefinition = computed(() => store.editing === 'definition')
 const isVariable = computed(() => store.editing === 'variable')
+
+// 定义视图：schema（结构）/ table（变量表）
+const defView = ref('schema')
+watch(() => [store.editing, target.value?.id], () => { defView.value = 'schema' })
 
 // ---- 面包屑导航栈：nav[0] 是根（定义/变量本身）----
 const nav = ref([])
@@ -115,23 +120,39 @@ async function copyJson() {
       <span v-if="isDefinition && !target.structId" class="need-hint">⚠ 请为该结构体填写 structId（数字）</span>
     </div>
 
-    <!-- 面包屑 -->
-    <nav class="crumbs">
-      <template v-for="(f, i) in nav" :key="i">
-        <button class="crumb" :class="{ active: i === nav.length - 1 }" @click="goTo(i)">
-          {{ i === 0 ? (target.name || '根') : f.label }}
-        </button>
-        <span v-if="i < nav.length - 1" class="crumb-sep">›</span>
-      </template>
-    </nav>
-
-    <div class="frame-scroll">
-      <FrameView
-        v-if="currentFrame"
-        :frame="currentFrame"
-        :editable-schema="isDefinition && currentFrame.isRoot === true"
-      />
+    <!-- 定义视图切换：结构 / 变量表 -->
+    <div v-if="isDefinition" class="view-tabs">
+      <button class="view-tab" :class="{ active: defView === 'schema' }" @click="defView = 'schema'">结构定义</button>
+      <button class="view-tab" :class="{ active: defView === 'table' }" @click="defView = 'table'">
+        变量表（{{ store.variables.filter((v) => v.defId === target.id || v.structId === target.structId).length }}）
+      </button>
     </div>
+
+    <!-- 变量表视图（方法二：一张表批量编辑该定义的全部变量） -->
+    <div v-if="isDefinition && defView === 'table'" class="frame-scroll">
+      <VariableTable />
+    </div>
+
+    <!-- 结构/变量 编辑视图 -->
+    <template v-else>
+      <!-- 面包屑 -->
+      <nav class="crumbs">
+        <template v-for="(f, i) in nav" :key="i">
+          <button class="crumb" :class="{ active: i === nav.length - 1 }" @click="goTo(i)">
+            {{ i === 0 ? (target.name || '根') : f.label }}
+          </button>
+          <span v-if="i < nav.length - 1" class="crumb-sep">›</span>
+        </template>
+      </nav>
+
+      <div class="frame-scroll">
+        <FrameView
+          v-if="currentFrame"
+          :frame="currentFrame"
+          :editable-schema="isDefinition && currentFrame.isRoot === true"
+        />
+      </div>
+    </template>
 
     <!-- 底部整体 JSON -->
     <div class="json-bar">
@@ -168,7 +189,9 @@ async function copyJson() {
 .need-hint { color: var(--danger); font-size: 12px; }
 
 .crumbs { display: flex; align-items: center; gap: 4px; flex-wrap: wrap; padding: 4px 16px 10px; border-bottom: 1px solid var(--border); }
-.crumb { border: none; background: transparent; color: var(--muted); padding: 2px 8px; border-radius: 6px; }
+.view-tabs { display: flex; gap: 6px; padding: 4px 16px 10px; border-bottom: 1px solid var(--border); }
+.view-tab { border-radius: 6px; padding: 4px 12px; }
+.view-tab.active { background: var(--primary-2); border-color: var(--primary); }.crumb { border: none; background: transparent; color: var(--muted); padding: 2px 8px; border-radius: 6px; }
 .crumb:hover { background: var(--panel-2); color: var(--text); }
 .crumb.active { color: var(--text); background: var(--panel-2); }
 .crumb-sep { color: var(--muted); }
