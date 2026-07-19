@@ -1,6 +1,6 @@
 <script setup>
 import { ref } from 'vue'
-import { useWorkspaceStore, SAMPLES } from '../stores/workspace.js'
+import { useWorkspaceStore } from '../stores/workspace.js'
 import { toJSON } from '../lib/miliastra.js'
 
 const store = useWorkspaceStore()
@@ -73,7 +73,7 @@ function download(text, filename) {
       >
         <div class="list-item-main">
           <div class="name">{{ d.name }}</div>
-          <div class="meta">{{ d.fields.length }} 字段 · id {{ d.structId }}</div>
+          <div class="meta">{{ d.fields.length }} 字段 · 索引 {{ d.structId }}</div>
         </div>
         <div class="list-item-ops">
           <button class="ghost icon-btn" title="导出" @click.stop="exportDef(d.id)">⬇</button>
@@ -82,7 +82,7 @@ function download(text, filename) {
         </div>
       </div>
       <div v-if="store.definitions.length === 0" class="empty">
-        暂无结构体定义，点击下方“新建 / 导入 / 示例”。
+        暂无结构体定义，点击下方“新建 / 导入”。
       </div>
     </div>
 
@@ -90,13 +90,6 @@ function download(text, filename) {
       <button class="primary" @click="store.addDefinition()">+ 新建</button>
       <button @click="pickFile">从文件导入</button>
       <button @click="importOpen = !importOpen">从 JSON 导入</button>
-      <select
-        @change="store.loadSample($event.target.value); $event.target.value = ''"
-        style="max-width:120px"
-      >
-        <option value="">加载示例…</option>
-        <option v-for="s in SAMPLES" :key="s.key" :value="s.key">{{ s.label }}</option>
-      </select>
       <input
         ref="fileInput"
         type="file"

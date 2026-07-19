@@ -7,14 +7,6 @@ import {
   defaultValueForType,
   fromJSON
 } from '../lib/miliastra.js'
-import simpleStruct from '../samples/simple-struct.json'
-import complexStruct from '../samples/complex-struct.json'
-
-/** 内置示例（结构体定义，打包进 Vue 应用） */
-export const SAMPLES = [
-  { key: 'simple', label: '简单结构体', data: simpleStruct },
-  { key: 'complex', label: '复杂结构体（全类型）', data: complexStruct }
-]
 
 const STORAGE_KEY = 'miliastra-struct-viewer'
 
@@ -83,7 +75,6 @@ export const useWorkspaceStore = defineStore('workspace', {
         const w = createWorkspace('存档 1')
         this.workspaces.push(w)
         this.activeWorkspaceId = w.id
-        this.loadSample('complex')
       }
     },
 
@@ -422,25 +413,6 @@ export const useWorkspaceStore = defineStore('workspace', {
     },
 
     touch() {
-      this.persist()
-    },
-
-    // ---------- 示例 ----------
-    loadSample(key) {
-      const sample = SAMPLES.find((s) => s.key === key)
-      const w = this.activeWorkspace
-      if (!sample || !w) return
-      const parsed = parseStructDefinition(sample.data)
-      const def = {
-        id: nextId(),
-        structId: genStructId(),
-        name: parsed.name,
-        structType: parsed.structType,
-        fields: parsed.fields
-      }
-      w.definitions.push(def)
-      this.selectDefinition(def.id)
-      this.message = `已加载示例：${sample.label}`
       this.persist()
     }
   }

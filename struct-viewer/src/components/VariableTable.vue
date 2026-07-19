@@ -5,9 +5,11 @@ import {
   PARAM_TYPE_META,
   isListType,
   isComplexType,
+  listElementType,
   defaultValueForType
 } from '../lib/miliastra.js'
 import ScalarValue from './ScalarValue.vue'
+import InlineList from './InlineList.vue'
 
 const store = useWorkspaceStore()
 
@@ -29,6 +31,10 @@ function summarize(paramType, val) {
 }
 function isCellComplex(paramType) {
   return isComplexType(paramType) || isListType(paramType)
+}
+// 标量列表在单元格内联编辑；Vector3List 宽度有界(X/Y/Z)也可行内
+function isInlineList(paramType) {
+  return isListType(paramType)
 }
 
 function openVar(v) {
@@ -106,7 +112,13 @@ function applyTsv() {
               <td>{{ ri }}</td>
               <td><input type="text" v-model="v.name" /></td>
               <td v-for="col in cols" :key="col.i">
-                <button v-if="isCellComplex(col.paramType)" class="enter-btn small" @click="openVar(v)">
+                <InlineList
+                  v-if="isInlineList(col.paramType) && cell(v, col.i)"
+                  :item-type="listElementType(col.paramType)"
+                  :model-value="cell(v, col.i).value"
+                  @update:model-value="cell(v, col.i).value = $event"
+                />
+                <button v-else-if="isCellComplex(col.paramType)" class="enter-btn small" @click="openVar(v)">
                   {{ summarize(col.paramType, cell(v, col.i)?.value) }} ▸
                 </button>
                 <ScalarValue

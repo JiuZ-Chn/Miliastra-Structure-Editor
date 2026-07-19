@@ -103,7 +103,7 @@ async function copyJson() {
         <input type="text" v-model="target.name" />
       </label>
       <label class="inline">
-        structId
+        结构体索引
         <input
           v-if="isDefinition"
           type="text"
@@ -113,11 +113,11 @@ async function copyJson() {
           placeholder="仅数字"
           :class="{ 'need-input': isDefinition && !target.structId }"
         />
-        <span v-else class="chip" title="变量的 structId 绑定结构体定义，不可修改">
+        <span v-else class="chip" title="变量的结构体索引绑定结构体定义，不可修改">
           {{ target.structId }}（绑定定义）
         </span>
       </label>
-      <span v-if="isDefinition && !target.structId" class="need-hint">⚠ 请为该结构体填写 structId（数字）</span>
+      <span v-if="isDefinition && !target.structId" class="need-hint">⚠ 请为该结构体填写 结构体索引（数字）</span>
     </div>
 
     <!-- 定义视图切换：结构 / 变量表 -->

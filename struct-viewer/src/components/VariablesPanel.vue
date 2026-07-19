@@ -79,7 +79,7 @@ function createFromDef(defId) {
       >
         <div class="list-item-main">
           <div class="name">{{ v.name }}</div>
-          <div class="meta">{{ v.fields.length }} 值 · id {{ v.structId }}</div>
+          <div class="meta">{{ v.fields.length }} 值 · 索引 {{ v.structId }}</div>
         </div>
         <div class="list-item-ops">
           <button class="ghost icon-btn" title="导出" @click.stop="exportVar(v.id)">⬇</button>

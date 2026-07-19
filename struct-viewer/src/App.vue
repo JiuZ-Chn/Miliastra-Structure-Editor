@@ -50,7 +50,7 @@ function renameActive(e) {
         当前存档名
         <input type="text" :value="store.activeWorkspace.name" @input="renameActive" />
       </label>
-      <span class="hint">不同存档相互独立，structId 可以重复。</span>
+      <span class="hint">不同存档相互独立，结构体索引可以重复。</span>
     </div>
 
     <main class="main-3col">
