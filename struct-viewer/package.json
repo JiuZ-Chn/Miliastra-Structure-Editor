@@ -1,9 +1,9 @@
 {
-  "name": "miliastra-struct-viewer",
+  "name": "miliastra-structure-editor",
   "version": "0.1.0",
   "private": true,
   "type": "module",
-  "description": "千星奇域 结构体 / 结构体变量 与 JSON 在线互转与编辑工具",
+  "description": "Miliastra（千星奇域）结构体与结构体变量可视化编辑器",
   "scripts": {
     "dev": "vite",
     "build": "vite build",

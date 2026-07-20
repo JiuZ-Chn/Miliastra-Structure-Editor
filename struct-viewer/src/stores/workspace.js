@@ -9,7 +9,8 @@ import {
   fromJSON
 } from '../lib/miliastra.js'
 
-const STORAGE_KEY = 'miliastra-struct-viewer'
+const STORAGE_KEY = 'miliastra-structure-editor'
+const LEGACY_STORAGE_KEYS = ['miliastra-struct-viewer']
 const STORAGE_VERSION = 1
 const PERSIST_DELAY = 150
 
@@ -127,6 +128,14 @@ function validateStoredData(data) {
   }
 }
 
+function findStoredWorkspace() {
+  for (const key of [STORAGE_KEY, ...LEGACY_STORAGE_KEYS]) {
+    const raw = localStorage.getItem(key)
+    if (raw) return { key, raw }
+  }
+  return null
+}
+
 export const useWorkspaceStore = defineStore('workspace', {
   state: () => ({
     /** 工作区（游戏存档）列表，彼此独立 */
@@ -193,14 +202,24 @@ export const useWorkspaceStore = defineStore('workspace', {
     },
 
     load() {
+      const stored = findStoredWorkspace()
+      if (!stored) return
+
       try {
-        const raw = localStorage.getItem(STORAGE_KEY)
-        if (!raw) return
-        const data = JSON.parse(raw)
+        const data = JSON.parse(stored.raw)
         const validated = validateStoredData(data)
         this.workspaces = validated.workspaces
         uid = validated.nextUid
         this.activeWorkspaceId = this.workspaces[0]?.id ?? null
+        if (stored.key !== STORAGE_KEY) {
+          localStorage.setItem(STORAGE_KEY, JSON.stringify({
+            version: STORAGE_VERSION,
+            workspaces: this.workspaces,
+            uid
+          }))
+          localStorage.removeItem(stored.key)
+          this.message = '已迁移旧版本本地存档'
+        }
         const duplicateIndexes = this.workspaces.flatMap((workspace) => {
           const seen = new Set()
           return workspace.definitions
@@ -211,11 +230,10 @@ export const useWorkspaceStore = defineStore('workspace', {
           this.message = `检测到重复结构体索引：${[...new Set(duplicateIndexes)].join('、')}，请修改后再创建变量`
         }
       } catch (error) {
-        const raw = localStorage.getItem(STORAGE_KEY)
-        if (raw) {
+        if (stored.raw) {
           try {
-            localStorage.setItem(`${STORAGE_KEY}-recovery`, raw)
-            localStorage.removeItem(STORAGE_KEY)
+            localStorage.setItem(`${STORAGE_KEY}-recovery`, stored.raw)
+            localStorage.removeItem(stored.key)
           } catch {
             /* recovery 写入失败时不覆盖原始异常 */
           }

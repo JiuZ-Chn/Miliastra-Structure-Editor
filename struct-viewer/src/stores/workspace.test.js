@@ -2,7 +2,8 @@ import { beforeEach, afterEach, describe, expect, it, vi } from 'vitest'
 import { createPinia, setActivePinia } from 'pinia'
 import { useWorkspaceStore } from './workspace.js'
 
-const STORAGE_KEY = 'miliastra-struct-viewer'
+const STORAGE_KEY = 'miliastra-structure-editor'
+const LEGACY_STORAGE_KEY = 'miliastra-struct-viewer'
 
 function createMemoryStorage() {
   const data = new Map()
@@ -53,6 +54,20 @@ describe('workspace store integrity', () => {
     store.addWorkspace()
 
     expect(store.activeWorkspaceId).toBeGreaterThan(40)
+  })
+
+  it('migrates the legacy project cache key without losing workspace data', () => {
+    localStorage.setItem(LEGACY_STORAGE_KEY, JSON.stringify({
+      workspaces: [{ id: 12, name: '旧项目存档', definitions: [], variables: [] }],
+      uid: 13
+    }))
+
+    const store = createStore()
+
+    expect(store.workspaces[0].name).toBe('旧项目存档')
+    expect(store.message).toContain('迁移')
+    expect(localStorage.getItem(LEGACY_STORAGE_KEY)).toBeNull()
+    expect(localStorage.getItem(STORAGE_KEY)).not.toBeNull()
   })
 
   it('requires a unique non-empty struct id before creating variables', () => {

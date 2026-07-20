@@ -1,10 +1,6 @@
-# Miliastra-Tools
+# Miliastra-Structure-Editor
 
-千星奇域（Miliastra）结构体工具集。
-
-## 千星奇域 · 结构体编辑器（Vue 3）
-
-一个纯前端工具，用于将千星奇域的「结构体 / 结构体变量」与 JSON 相互转换，并在网页上可视化编辑，位于 [struct-viewer/](struct-viewer/)。
+一个纯前端的千星奇域（Miliastra）结构体与结构体变量可视化编辑器，位于 [struct-viewer/](struct-viewer/)。支持将结构体、结构体变量与 JSON 相互转换和在线编辑。
 
 参考 [ugc-struct-viewer](https://github.com/xiaomoL444/ugc-struct-viewer) 与
 [在线结构体编辑器](https://tool.xiaomol444.xyz/StructViewer)。

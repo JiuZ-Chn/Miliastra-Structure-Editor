@@ -21,7 +21,7 @@ function renameActive(val) {
   <n-config-provider :theme="darkTheme" :theme-overrides="appThemeOverrides">
     <div class="app-shell">
       <header class="app-header">
-        <h1>千星奇域 · 结构体编辑器</h1>
+        <h1>Miliastra-Structure-Editor</h1>
 
         <div class="ws-bar">
           <span class="ws-label">工作区（存档）</span>
