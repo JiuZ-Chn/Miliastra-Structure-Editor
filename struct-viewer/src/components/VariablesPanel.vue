@@ -1,7 +1,10 @@
 <script setup>
 import { ref } from 'vue'
+import { Braces, Download, FileUp, Plus, Trash2 } from '@lucide/vue'
+import { NButton, NInput } from 'naive-ui'
 import { useWorkspaceStore } from '../stores/workspace.js'
 import { toJSON } from '../lib/miliastra.js'
+import ActionIconButton from './ActionIconButton.vue'
 
 const store = useWorkspaceStore()
 const importOpen = ref(false)
@@ -82,8 +85,8 @@ function createFromDef(defId) {
           <div class="meta">{{ v.fields.length }} 值 · 索引 {{ v.structId }}</div>
         </div>
         <div class="list-item-ops">
-          <button class="ghost icon-btn" title="导出" @click.stop="exportVar(v.id)">⬇</button>
-          <button class="ghost icon-btn danger" title="删除" @click.stop="store.removeVariable(v.id)">✕</button>
+          <ActionIconButton label="导出变量" :icon="Download" compact @click.stop="exportVar(v.id)" />
+          <ActionIconButton label="删除变量" :icon="Trash2" compact danger @click.stop="store.removeVariable(v.id)" />
         </div>
       </div>
       <div v-if="store.variables.length === 0" class="empty">
@@ -92,9 +95,18 @@ function createFromDef(defId) {
     </div>
 
     <div class="col-foot">
-      <button class="primary" @click="pickDefOpen = !pickDefOpen">+ 新建变量</button>
-      <button @click="pickFile">从文件导入</button>
-      <button @click="importOpen = !importOpen">从 JSON 导入</button>
+      <n-button type="primary" size="small" @click="pickDefOpen = !pickDefOpen">
+        <template #icon><Plus :size="15" /></template>
+        新建变量
+      </n-button>
+      <n-button size="small" @click="pickFile">
+        <template #icon><FileUp :size="15" /></template>
+        文件导入
+      </n-button>
+      <n-button size="small" @click="importOpen = !importOpen">
+        <template #icon><Braces :size="15" /></template>
+        JSON 导入
+      </n-button>
       <input
         ref="fileInput"
         type="file"
@@ -107,23 +119,29 @@ function createFromDef(defId) {
 
     <div v-if="pickDefOpen" class="import-box">
       <div class="hint" style="margin-bottom:6px">选择基于的结构体定义：</div>
-      <button
+      <n-button
         v-for="d in store.definitions"
         :key="d.id"
-        class="ghost"
-        style="width:100%; text-align:left; margin-bottom:4px"
+        quaternary
+        size="small"
+        style="width:100%; justify-content:flex-start; margin-bottom:4px"
         @click="createFromDef(d.id)"
       >
         {{ d.name }}（id {{ d.structId }}）
-      </button>
+      </n-button>
       <div v-if="store.definitions.length === 0" class="error">当前存档没有结构体定义，请先在“高级数据管理”创建。</div>
     </div>
 
     <div v-if="importOpen" class="import-box">
-      <textarea v-model="importText" placeholder='粘贴“结构体变量”JSON'></textarea>
-      <div class="toolbar">
-        <button class="primary" @click="doImport">导入</button>
-        <button @click="importOpen = false">取消</button>
+      <n-input
+        v-model:value="importText"
+        type="textarea"
+        :rows="6"
+        placeholder='粘贴“结构体变量”JSON'
+      />
+      <div class="toolbar" style="margin-top:8px">
+        <n-button type="primary" size="small" @click="doImport">导入</n-button>
+        <n-button size="small" @click="importOpen = false">取消</n-button>
       </div>
       <div v-if="error" class="error">{{ error }}</div>
     </div>
@@ -131,18 +149,19 @@ function createFromDef(defId) {
 </template>
 
 <style scoped>
-.col { display: flex; flex-direction: column; height: 100%; border-right: 1px solid var(--border); }
-.col-head { padding: 12px; border-bottom: 1px solid var(--border); }
-.col-head h2 { margin: 0; font-size: 14px; }
+.col { display: flex; flex-direction: column; height: 100%; border-right: 1px solid var(--border); background: rgba(255, 255, 255, 0.012); }
+.col-head { padding: 12px 14px; border-bottom: 1px solid var(--border); }
+.col-head h2 { margin: 0; font-size: 13px; font-weight: 600; color: var(--text); letter-spacing: 0.02em; }
 .col-body { flex: 1; min-height: 0; overflow-y: auto; padding: 8px; }
 .col-foot { padding: 8px; border-top: 1px solid var(--border); display: flex; gap: 6px; flex-wrap: wrap; }
-.list-item { display: flex; align-items: center; justify-content: space-between; padding: 8px 10px; border-radius: 6px; cursor: pointer; margin-bottom: 4px; border: 1px solid transparent; }
-.list-item:hover { background: var(--panel-2); }
-.list-item.active { background: var(--panel-2); border-color: var(--primary); }
+.list-item { position: relative; display: flex; align-items: center; justify-content: space-between; padding: 8px 10px 8px 12px; border-radius: 8px; cursor: pointer; margin-bottom: 4px; border: 1px solid transparent; transition: background 0.15s, border-color 0.15s; }
+.list-item::before { content: ""; position: absolute; left: 4px; top: 50%; transform: translateY(-50%); width: 3px; height: 0; border-radius: 3px; background: var(--primary); transition: height 0.18s; }
+.list-item:hover { background: rgba(255, 255, 255, 0.04); }
+.list-item.active { background: var(--primary-2); border-color: rgba(124, 108, 255, 0.35); }
+.list-item.active::before { height: 60%; }
 .list-item .name { font-size: 14px; }
 .list-item .meta { font-size: 11px; color: var(--muted); }
 .list-item-ops { display: flex; gap: 2px; align-items: center; }
 .empty { color: var(--muted); font-size: 12px; padding: 12px; }
 .import-box { padding: 8px; border-top: 1px solid var(--border); }
-.import-box textarea { min-height: 120px; }
 </style>

@@ -1,7 +1,10 @@
 <script setup>
 import { computed } from 'vue'
+import { Plus, Trash2 } from '@lucide/vue'
+import { NButton } from 'naive-ui'
 import { defaultValueForType } from '../lib/miliastra.js'
 import ScalarValue from './ScalarValue.vue'
+import ActionIconButton from './ActionIconButton.vue'
 
 const props = defineProps({
   itemType: { type: String, required: true },
@@ -39,10 +42,13 @@ function append() {
     <div v-for="(item, i) in items" :key="i" class="li-row">
       <span class="idx">{{ i }}</span>
       <ScalarValue :param-type="itemType" :model-value="items[i]" @update:model-value="setItem(i, $event)" />
-      <button class="ins" title="在此前插入一项" @click="insertAt(i)">+</button>
-      <button class="rm" title="删除此项" @click="removeAt(i)">×</button>
+      <ActionIconButton label="在此前插入一项" :icon="Plus" compact primary @click="insertAt(i)" />
+      <ActionIconButton label="删除此项" :icon="Trash2" compact danger @click="removeAt(i)" />
     </div>
-    <button class="add" title="添加一项" @click="append">+ 添加项</button>
+    <n-button class="add" text type="primary" size="tiny" @click="append">
+      <template #icon><Plus :size="13" /></template>
+      添加项
+    </n-button>
   </div>
 </template>
 
@@ -54,7 +60,7 @@ function append() {
   padding: 3px 4px;
   border: 1px dashed var(--border);
   border-radius: 6px;
-  background: rgba(108, 140, 255, 0.06);
+  background: rgba(255, 255, 255, 0.04);
   min-width: 120px;
 }
 .li-row {
@@ -68,26 +74,5 @@ function append() {
   width: 100%;
   padding: 2px 4px;
 }
-.rm, .ins {
-  border: none;
-  background: transparent;
-  cursor: pointer;
-  padding: 0 4px;
-  line-height: 1;
-  font-size: 13px;
-}
-.rm { color: var(--muted); }
-.rm:hover { color: var(--danger); }
-.ins { color: var(--primary); font-weight: 700; }
-.ins:hover { background: var(--panel-2); border-radius: 4px; }
-.add {
-  align-self: flex-start;
-  border: none;
-  background: transparent;
-  color: var(--primary);
-  cursor: pointer;
-  font-size: 12px;
-  padding: 1px 4px;
-}
-.add:hover { background: var(--panel-2); border-radius: 4px; }
+.add { align-self: flex-start; }
 </style>

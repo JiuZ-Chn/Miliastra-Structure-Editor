@@ -90,6 +90,39 @@ describe('反向转换 - 结构体变量', () => {
     expect(detectKind(complexVar)).toBe('variable')
     expect(detectKind(simpleDef)).toBe('definition')
   })
+
+  it('拒绝字段数量与定义不一致的变量', () => {
+    const template = parseStructDefinition(simpleDef).fields
+    const invalid = {
+      structId: '1',
+      type: 'Struct',
+      value: [{ param_type: 'Int32', value: '0' }]
+    }
+    expect(() => parseStructVariable(invalid, template)).toThrow('字段数量不匹配')
+  })
+
+  it('拒绝字段位置类型与定义不一致的变量', () => {
+    const template = parseStructDefinition(simpleDef).fields
+    const invalid = {
+      structId: '1',
+      type: 'Struct',
+      value: [
+        { param_type: 'Struct', value: { structId: '2', type: 'Struct', value: [] } },
+        { param_type: 'Float', value: '0.00' },
+        { param_type: 'Bool', value: 'False' }
+      ]
+    }
+    expect(() => parseStructVariable(invalid, template)).toThrow('类型不匹配')
+  })
+
+  it('拒绝复合类型的畸形值', () => {
+    const invalid = {
+      structId: '1',
+      type: 'Struct',
+      value: [{ param_type: 'StructList', value: [] }]
+    }
+    expect(() => parseStructVariable(invalid)).toThrow('StructList 值格式无效')
+  })
 })
 
 describe('千星完整类型体系', () => {

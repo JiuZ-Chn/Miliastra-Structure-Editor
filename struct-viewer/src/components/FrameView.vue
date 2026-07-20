@@ -1,5 +1,7 @@
 <script setup>
-import { ref, reactive, computed, inject } from 'vue'
+import { ref, computed } from 'vue'
+import { ArrowDown, ArrowUp, Copy, FileSpreadsheet, Plus, Table2, Trash2 } from '@lucide/vue'
+import { NButton } from 'naive-ui'
 import { useWorkspaceStore } from '../stores/workspace.js'
 import {
   PARAM_TYPES,
@@ -8,11 +10,24 @@ import {
   defaultValueForType,
   isListType,
   isComplexType,
-  listElementType,
-  blankStructValue
+  listElementType
 } from '../lib/miliastra.js'
+import {
+  createBlankStructValue,
+  flattenStructDefinition,
+  getStructEntryAtPath,
+  groupFlattenedColumns
+} from '../lib/flatten.js'
+import {
+  assertHeader,
+  decodeTabularValue,
+  encodeTabularValue,
+  parseTsv,
+  stringifyTsv
+} from '../lib/tabular.js'
 import ScalarValue from './ScalarValue.vue'
 import InlineList from './InlineList.vue'
+import ActionIconButton from './ActionIconButton.vue'
 
 // 允许在展开内容里递归渲染自身
 defineOptions({ name: 'FrameView' })
@@ -23,7 +38,6 @@ const props = defineProps({
 })
 
 const store = useWorkspaceStore()
-const navigate = inject('navigate')
 
 const deepClone = (x) => JSON.parse(JSON.stringify(x))
 
@@ -31,11 +45,6 @@ const deepClone = (x) => JSON.parse(JSON.stringify(x))
 function resolveDef(structId) {
   return store.definitions.find((d) => String(d.structId) === String(structId)) || null
 }
-function resolveKeys(structId) {
-  const def = resolveDef(structId)
-  return def ? def.fields.map((f) => f.key) : null
-}
-
 function typeLabel(t) {
   return `${PARAM_TYPE_META[t]?.title ?? t}（${t}）`
 }
@@ -74,7 +83,9 @@ function refStructId(row) {
 function setStructRef(row, structId) {
   const d = resolveDef(structId)
   if (row.paramType === 'Struct') {
-    row.ref.value = d ? blankStructValue(d) : { structId: String(structId), type: 'Struct', value: [] }
+    row.ref.value = d
+      ? createBlankStructValue(d, resolveDef)
+      : { structId: String(structId), type: 'Struct', value: [] }
   } else {
     // StructList 默认空列表
     row.ref.value = { structId: String(structId), value: [] }
@@ -115,32 +126,17 @@ const structRows = computed(() => {
   }))
 })
 
-function enterField(row) {
-  navigate(buildChildFrame(row.key, row.paramType, row.ref.value))
-}
-
-/* 复合类型就地折叠展开：Struct 默认展开，StructList/Dict 默认折叠 */
-const toggled = reactive(new Set())
-function defaultExpanded(row) {
-  return row.paramType === 'Struct'
-}
-function isExpanded(row) {
-  return toggled.has(row.i) ? !defaultExpanded(row) : defaultExpanded(row)
-}
-function toggleExpand(row) {
-  if (toggled.has(row.i)) toggled.delete(row.i)
-  else toggled.add(row.i)
-}
-
-function buildChildFrame(label, paramType, val) {
+function buildInlineFrame(label, paramType, val) {
+  if (paramType === 'Struct') {
+    return structAsListFrame(val, label)
+  }
   if (paramType === 'StructList') {
     return { kind: 'structList', label, slVal: val }
   }
   if (paramType === 'Dict') {
     return { kind: 'dict', label, dictVal: val }
   }
-  // Struct（含无法解析的结构体）
-  return { kind: 'struct', label, structObj: val, keys: resolveKeys(val?.structId) }
+  return null
 }
 
 /* 把单个结构体包装成“只有 1 行的结构体列表”帧，复用同一套网格样式 */
@@ -165,27 +161,16 @@ function structAsListFrame(structObj, label) {
 
 // 定义模式下的字段增删改
 function addField() {
-  props.frame.rootFields.push({
-    key: `字段_${props.frame.rootFields.length + 1}`,
-    paramType: 'Int32',
-    value: defaultValueForType('Int32')
-  })
+  store.addField()
 }
 function removeField(i) {
-  props.frame.rootFields.splice(i, 1)
+  store.removeField(i)
 }
 function moveField(i, d) {
-  const arr = props.frame.rootFields
-  const t = i + d
-  if (t < 0 || t >= arr.length) return
-  const [x] = arr.splice(i, 1)
-  arr.splice(t, 0, x)
+  store.moveField(i, d)
 }
 function changeType(row) {
-  return (e) => {
-    row.src.paramType = e.target.value
-    row.src.value = defaultValueForType(e.target.value)
-  }
+  return (e) => store.changeFieldType(row.i, e.target.value)
 }
 
 /* ---------------- structList 帧 ---------------- */
@@ -203,93 +188,22 @@ function slCell(item, colIdx) {
   return item?.value?.value?.[colIdx] // { param_type, value }
 }
 
-/* ---- Excel 化：把嵌套的定长结构体递归拍平成“点分列”（多层全部展开，靠 seen 防自引用环） ---- */
-function buildFlatCols(fields, prefix, path, depth, seen) {
-  const cols = []
-  fields.forEach((f, i) => {
-    const p = [...path, i]
-    const label = prefix ? `${prefix}.${f.key}` : f.key
-    if (f.paramType === 'Struct') {
-      const subId = f.value && f.value.structId != null ? String(f.value.structId) : ''
-      const subDef = resolveDef(subId)
-      if (subDef && !seen.includes(subId)) {
-        cols.push(...buildFlatCols(subDef.fields, label, p, depth + 1, [...seen, subId]))
-        return
-      }
-    }
-    cols.push({ label, group: prefix, leaf: f.key, path: p, paramType: f.paramType })
-  })
-  return cols
-}
 // 拍平后的列（仅当能解析到定义时启用）
 const slFlatCols = computed(() => {
   const def = slDef.value
   if (!def) return null
-  return buildFlatCols(def.fields, '', [], 0, [String(def.structId)])
+  return flattenStructDefinition(def, resolveDef)
 })
 // 把连续同属一个结构体（group 相同）的列聚成“分组表头”，空 group 为独立列
 const slHeaderRuns = computed(() => {
   const cols = slFlatCols.value
   if (!cols) return null
-  const runs = []
-  let i = 0
-  while (i < cols.length) {
-    const g = cols[i].group
-    if (!g) {
-      runs.push({ group: '', cols: [cols[i]] })
-      i++
-    } else {
-      let j = i
-      while (j < cols.length && cols[j].group === g) j++
-      runs.push({ group: g, cols: cols.slice(i, j) })
-      i = j
-    }
-  }
-  return runs
+  return groupFlattenedColumns(cols).map(({ group, columns }) => ({ group, cols: columns }))
 })
-// 按 path 取到叶子 { param_type, value }；缺失的中间结构体节点会惰性补齐
+// StructList 的行元素比 Struct 值多一层 `{ param_type, value }` 包装。
 function cellByPath(item, path) {
-  let node = item?.value // 结构体对象 {structId,type,value:[]}
-  for (let k = 0; k < path.length; k++) {
-    if (!node || !Array.isArray(node.value)) return null
-    const entry = node.value[path[k]]
-    if (!entry) return null
-    if (k === path.length - 1) return entry
-    node = entry.value // 下一层结构体对象
-  }
-  return null
+  return getStructEntryAtPath(item?.value, path)
 }
-
-/* 递归生成“深默认结构体”，让新增项的嵌套结构体也带完整字段 */
-function deepBlankStruct(def, seen = []) {
-  return {
-    structId: String(def.structId ?? ''),
-    type: 'Struct',
-    value: def.fields.map((f) => {
-      if (f.paramType === 'Struct') {
-        const subId = f.value && f.value.structId != null ? String(f.value.structId) : ''
-        const subDef = resolveDef(subId)
-        if (subDef && !seen.includes(subId)) {
-          return { param_type: 'Struct', value: deepBlankStruct(subDef, [...seen, String(def.structId)]) }
-        }
-        return { param_type: 'Struct', value: { structId: subId, type: 'Struct', value: [] } }
-      }
-      if (f.paramType === 'StructList') {
-        const subId = f.value && f.value.structId != null ? String(f.value.structId) : ''
-        return { param_type: 'StructList', value: { structId: subId, value: [] } }
-      }
-      if (f.paramType === 'Dict') {
-        return { param_type: 'Dict', value: deepClone(f.value) }
-      }
-      return { param_type: f.paramType, value: deepClone(defaultValueForType(f.paramType)) }
-    })
-  }
-}
-function slEnterFlat(item, col) {
-  const leaf = cellByPath(item, col.path)
-  if (leaf) navigate(buildChildFrame(col.label, col.paramType, leaf.value))
-}
-
 /* 标量列表在单元格内联编辑；Vector3List 宽度有界(X/Y/Z)也可行内 */
 function isInlineList(paramType) {
   return isListType(paramType)
@@ -297,7 +211,7 @@ function isInlineList(paramType) {
 function slNewItem() {
   const def = slDef.value
   const struct = def
-    ? deepBlankStruct(def)
+    ? createBlankStructValue(def, resolveDef)
     : deepClone(props.frame.slVal.value[0]?.value ?? { structId: props.frame.slVal.structId, type: 'Struct', value: [] })
   return { param_type: 'Struct', value: struct }
 }
@@ -317,86 +231,71 @@ function slMove(i, d) {
   const [x] = arr.splice(i, 1)
   arr.splice(t, 0, x)
 }
-function slEnterCell(item, col) {
-  navigate(buildChildFrame(col.key, col.paramType, slCell(item, col.i).value))
-}
-
 /* structList 批量文本(TSV)：行=结构体项，列=字段，可与 Excel 互贴 */
 const slMode = ref('grid') // grid | tsv
 const slText = ref('')
-const COL_DELIM = '\t'
-const LIST_DELIM = '|'
-function serCell(paramType, value) {
-  if (isListType(paramType)) return Array.isArray(value) ? value.join(LIST_DELIM) : ''
-  if (isComplexType(paramType)) return JSON.stringify(value ?? null)
-  return value == null ? '' : String(value)
-}
-function parseCell(paramType, text) {
-  if (isListType(paramType)) return text === '' ? [] : text.split(LIST_DELIM)
-  if (isComplexType(paramType)) {
-    try {
-      return JSON.parse(text)
-    } catch {
-      return deepClone(defaultValueForType(paramType))
-    }
-  }
-  return text
-}
+const tableError = ref('')
 function slGenTsv() {
   const flat = slFlatCols.value
   if (flat) {
-    const header = flat.map((c) => c.label).join(COL_DELIM)
+    const header = flat.map((c) => c.label)
     const lines = slRows.value.map((item) =>
-      flat.map((c) => serCell(c.paramType, cellByPath(item, c.path)?.value)).join(COL_DELIM)
+      flat.map((c) => encodeTabularValue(c.paramType, cellByPath(item, c.path)?.value))
     )
-    slText.value = [header, ...lines].join('\n')
+    slText.value = stringifyTsv([header, ...lines])
+    tableError.value = ''
     slMode.value = 'tsv'
     return
   }
   const cols = slCols.value
-  const header = cols.map((c) => c.key).join(COL_DELIM)
+  const header = cols.map((c) => c.key)
   const lines = slRows.value.map((item) =>
-    cols.map((c) => serCell(c.paramType, slCell(item, c.i)?.value)).join(COL_DELIM)
+    cols.map((c) => encodeTabularValue(c.paramType, slCell(item, c.i)?.value))
   )
-  slText.value = [header, ...lines].join('\n')
+  slText.value = stringifyTsv([header, ...lines])
+  tableError.value = ''
   slMode.value = 'tsv'
 }
 function slApplyTsv() {
-  const rows = slText.value.split('\n')
-  const body = rows.slice(1).filter((l) => l.trim() !== '')
-  const flat = slFlatCols.value
-  if (flat && slDef.value) {
-    const items = body.map((line) => {
-      const cells = line.split(COL_DELIM)
-      const struct = deepBlankStruct(slDef.value)
-      const item = { param_type: 'Struct', value: struct }
-      flat.forEach((c, ci) => {
-        const leaf = cellByPath(item, c.path)
-        if (leaf) leaf.value = parseCell(c.paramType, (cells[ci] ?? '').trim())
+  try {
+    const rows = parseTsv(slText.value)
+    const flat = slFlatCols.value
+    const columns = flat ?? slCols.value
+    const header = columns.map((column) => flat ? column.label : column.key)
+    assertHeader(rows[0] ?? [], header)
+    const body = rows.slice(1).filter((row) => row.some((cell) => cell !== ''))
+
+    let items
+    if (flat && slDef.value) {
+      items = body.map((cells) => {
+        const struct = createBlankStructValue(slDef.value, resolveDef)
+        const item = { param_type: 'Struct', value: struct }
+        flat.forEach((column, index) => {
+          const leaf = cellByPath(item, column.path)
+          if (leaf) leaf.value = decodeTabularValue(column.paramType, cells[index] ?? '')
+        })
+        return item
       })
-      return item
-    })
-    props.frame.slVal.value.splice(0, props.frame.slVal.value.length, ...items)
-    slMode.value = 'grid'
-    return
-  }
-  const cols = slCols.value
-  const items = body.map((line) => {
-    const cells = line.split(COL_DELIM)
-    return {
-      param_type: 'Struct',
-      value: {
-        structId: String(props.frame.slVal.structId ?? ''),
-        type: 'Struct',
-        value: cols.map((c, ci) => ({
-          param_type: c.paramType,
-          value: parseCell(c.paramType, (cells[ci] ?? '').trim())
-        }))
-      }
+    } else {
+      items = body.map((cells) => ({
+        param_type: 'Struct',
+        value: {
+          structId: String(props.frame.slVal.structId ?? ''),
+          type: 'Struct',
+          value: slCols.value.map((column, index) => ({
+            param_type: column.paramType,
+            value: decodeTabularValue(column.paramType, cells[index] ?? '')
+          }))
+        }
+      }))
     }
-  })
-  props.frame.slVal.value.splice(0, props.frame.slVal.value.length, ...items)
-  slMode.value = 'grid'
+
+    props.frame.slVal.value.splice(0, props.frame.slVal.value.length, ...items)
+    tableError.value = ''
+    slMode.value = 'grid'
+  } catch (error) {
+    tableError.value = `无法应用 TSV：${error.message}`
+  }
 }
 
 /* ---------------- dict 帧 ---------------- */
@@ -407,7 +306,7 @@ const dictValComplex = computed(() => isComplexType(dictValType.value)) // Struc
 const dictValList = computed(() => isListType(dictValType.value)) // 列表 → 行内
 function dictDefaultValue() {
   const vt = dictValType.value
-  if (vt === 'Struct') return blankStructValue(resolveDef(props.frame.dictVal.value_structId))
+  if (vt === 'Struct') return createBlankStructValue(resolveDef(props.frame.dictVal.value_structId), resolveDef)
   if (vt === 'StructList') return { structId: String(props.frame.dictVal.value_structId ?? ''), value: [] }
   if (isListType(vt)) return []
   return defaultValueForType(vt)
@@ -439,29 +338,45 @@ function dictMove(i, d) {
   const [x] = arr.splice(i, 1)
   arr.splice(t, 0, x)
 }
-function dictEnterValue(entry) {
-  navigate(buildChildFrame('值', dictValType.value, entry.value.value))
-}
-
 // 简单标量字典的批量文本（key<TAB>value 每行一条）
 const dictScalar = computed(() => !dictValComplex.value && !dictValList.value)
 const dictMode = ref('form')
 const dictText = ref('')
 function dictOpenText() {
-  dictText.value = dictEntries.value.map((e) => `${e.key.value}\t${e.value.value}`).join('\n')
+  dictText.value = stringifyTsv([
+    ['键', '值'],
+    ...dictEntries.value.map((entry) => [
+      encodeTabularValue(dictKeyType.value, entry.key.value),
+      encodeTabularValue(dictValType.value, entry.value.value)
+    ])
+  ])
+  tableError.value = ''
   dictMode.value = 'text'
 }
 function dictApplyText() {
-  const rows = dictText.value.split('\n').filter((l) => l.trim() !== '')
-  const entries = rows.map((line) => {
-    const [k, ...rest] = line.split('\t')
-    return {
-      key: { param_type: dictKeyType.value, value: k ?? '' },
-      value: { param_type: dictValType.value, value: rest.join('\t') ?? '' }
-    }
-  })
-  props.frame.dictVal.value.splice(0, props.frame.dictVal.value.length, ...entries)
-  dictMode.value = 'form'
+  try {
+    const rows = parseTsv(dictText.value)
+    assertHeader(rows[0] ?? [], ['键', '值'])
+    const entries = rows.slice(1)
+      .filter((row) => row.some((cell) => cell !== ''))
+      .map((row) => ({
+        key: {
+          param_type: dictKeyType.value,
+          value: decodeTabularValue(dictKeyType.value, row[0] ?? '')
+        },
+        value: {
+          param_type: dictValType.value,
+          value: decodeTabularValue(dictValType.value, row[1] ?? '')
+        }
+      }))
+    const keys = entries.map((entry) => String(entry.key.value))
+    if (new Set(keys).size !== keys.length) throw new Error('字典键不能重复')
+    props.frame.dictVal.value.splice(0, props.frame.dictVal.value.length, ...entries)
+    tableError.value = ''
+    dictMode.value = 'form'
+  } catch (error) {
+    tableError.value = `无法应用 TSV：${error.message}`
+  }
 }
 </script>
 
@@ -469,18 +384,21 @@ function dictApplyText() {
   <!-- ============ struct ============ -->
   <div v-if="frame.kind === 'struct'">
     <div v-if="editableSchema" class="toolbar">
-      <button class="primary" @click="addField">+ 添加字段</button>
+      <n-button type="primary" size="small" @click="addField">
+        <template #icon><Plus :size="15" /></template>
+        添加字段
+      </n-button>
       <span class="hint">共 {{ structRows.length }} 个字段</span>
     </div>
 
-    <table class="field-table">
+    <table v-resizable-columns class="field-table">
       <thead>
         <tr>
           <th style="width:34px">#</th>
           <th style="width:24%">字段名</th>
           <th style="width:22%">类型</th>
           <th>值</th>
-          <th v-if="editableSchema" style="width:110px">操作</th>
+          <th v-if="editableSchema" class="operation-column compact">操作</th>
         </tr>
       </thead>
       <tbody>
@@ -488,7 +406,7 @@ function dictApplyText() {
         <tr>
           <td>{{ row.i }}</td>
           <td>
-            <input v-if="editableSchema" type="text" v-model="row.src.key" />
+            <input v-if="editableSchema" type="text" :value="row.src.key" @input="store.renameField(row.i, $event.target.value)" />
             <span v-else class="chip">{{ row.key }}</span>
           </td>
           <td>
@@ -507,9 +425,7 @@ function dictApplyText() {
                   {{ d.name }}（{{ d.structId || '未设ID' }}）
                 </option>
               </select>
-              <button class="enter-btn small" @click="toggleExpand(row)">
-                {{ isExpanded(row) ? '▾ 收起默认' : '▸ 展开默认' }}（{{ summarize(row.paramType, row.ref.value) }}）
-              </button>
+              <span class="complex-summary">{{ summarize(row.paramType, row.ref.value) }}</span>
             </div>
 
             <!-- 定义模式：Dict 声明 键/值 类型（展开内容见下方整行） -->
@@ -528,9 +444,7 @@ function dictApplyText() {
                   <option v-for="d in refDefs" :key="d.id" :value="d.structId">{{ d.name }}（{{ d.structId || '未设ID' }}）</option>
                 </select>
               </template>
-              <button class="enter-btn small" @click="toggleExpand(row)">
-                {{ isExpanded(row) ? '▾ 收起默认' : '▸ 展开默认' }}（{{ summarize('Dict', row.ref.value) }}）
-              </button>
+              <span class="complex-summary">{{ summarize('Dict', row.ref.value) }}</span>
             </div>
 
             <!-- 标量列表（含 Vector3List）：行内编辑 -->
@@ -541,40 +455,28 @@ function dictApplyText() {
               @update:model-value="row.ref.value = $event"
             />
 
-            <!-- 数据模式：Struct / StructList / Dict 折叠头（展开内容见下方整行，从第一列开始） -->
-            <div v-else-if="isComplexType(row.paramType)" class="collapse-head">
-              <button class="enter-btn" @click="toggleExpand(row)">
-                <span class="chip">{{ getTypeMeta(row.paramType).title }}</span>
-                <span v-if="refName(row.paramType, row.ref.value)" class="ref-name">〈{{ refName(row.paramType, row.ref.value) }}〉</span>
-                <span class="summary">{{ summarize(row.paramType, row.ref.value) }}</span>
-                <span class="arrow">{{ isExpanded(row) ? '▾ 收起' : '▸ 展开' }}</span>
-              </button>
-              <button
-                v-if="row.paramType !== 'Struct'"
-                class="ghost icon-btn"
-                title="在新视图中打开"
-                @click="enterField(row)"
-              >↗</button>
+            <!-- 数据模式：复合类型直接递归展开 -->
+            <div v-else-if="isComplexType(row.paramType)" class="complex-summary-row">
+              <span class="chip">{{ getTypeMeta(row.paramType).title }}</span>
+              <span v-if="refName(row.paramType, row.ref.value)" class="ref-name">〈{{ refName(row.paramType, row.ref.value) }}〉</span>
+              <span class="complex-summary">{{ summarize(row.paramType, row.ref.value) }}</span>
             </div>
             <ScalarValue v-else :param-type="row.paramType" v-model="row.ref.value" />
           </td>
-          <td v-if="editableSchema">
-            <button class="ghost icon-btn" @click="moveField(row.i, -1)" :disabled="row.i === 0">↑</button>
-            <button class="ghost icon-btn" @click="moveField(row.i, 1)" :disabled="row.i === structRows.length - 1">↓</button>
-            <button class="ghost icon-btn danger" @click="removeField(row.i)">✕</button>
+          <td v-if="editableSchema" class="operation-column compact">
+            <div class="row-actions">
+              <ActionIconButton label="上移" :icon="ArrowUp" :disabled="row.i === 0" @click="moveField(row.i, -1)" />
+              <ActionIconButton label="下移" :icon="ArrowDown" :disabled="row.i === structRows.length - 1" @click="moveField(row.i, 1)" />
+              <ActionIconButton label="删除字段" :icon="Trash2" danger @click="removeField(row.i)" />
+            </div>
           </td>
         </tr>
         <!-- 展开的完整内容：跨整行、从第一列开始渲染（结构体视作 1 行的结构体列表） -->
-        <tr v-if="isComplexType(row.paramType) && isExpanded(row)" class="expand-row">
+        <tr v-if="isComplexType(row.paramType)" class="expand-row">
           <td :colspan="editableSchema ? 5 : 4">
             <FrameView
-              v-if="row.paramType === 'Struct' && row.ref.value"
-              :frame="structAsListFrame(row.ref.value, row.key)"
-              :editable-schema="false"
-            />
-            <FrameView
-              v-else
-              :frame="buildChildFrame(row.key, row.paramType, row.ref.value)"
+              v-if="row.ref.value"
+              :frame="buildInlineFrame(row.key, row.paramType, row.ref.value)"
               :editable-schema="false"
             />
           </td>
@@ -587,21 +489,26 @@ function dictApplyText() {
 
   <!-- ============ structList（表格 / TSV） ============ -->
   <div v-else-if="frame.kind === 'structList'">
-    <div v-if="!frame.single" class="toolbar">
-      <button :class="{ primary: slMode === 'grid' }" @click="slMode = 'grid'">表格</button>
-      <button :class="{ primary: slMode === 'tsv' }" @click="slGenTsv">批量文本(TSV)</button>
-      <span class="hint">
-        结构体列表 · 共 {{ slRows.length }} 项
-        <template v-if="slDef">· 绑定定义「{{ slDef.name }}」</template>
-        <template v-else>· 未找到 结构体索引={{ frame.slVal.structId }} 的定义，按位置显示</template>
-      </span>
-    </div>
-
     <template v-if="slMode === 'grid'">
       <div class="grid-scroll">
         <!-- 拍平列：嵌套定长结构体展开成点分列，可直接内联编辑（Excel 化） -->
-        <table v-if="slFlatCols" class="grid-table">
+        <table v-if="slFlatCols" v-resizable-columns class="grid-table">
           <thead>
+            <tr v-if="!frame.single">
+              <th :colspan="slFlatCols.length + 2" class="mode-header-cell">
+                <div class="table-mode-header">
+                  <span class="table-mode-meta">{{ slRows.length }} 项</span>
+                  <n-button size="tiny" type="primary" @click="slMode = 'grid'">
+                    <template #icon><Table2 :size="14" /></template>
+                    表格
+                  </n-button>
+                  <n-button size="tiny" secondary @click="slGenTsv">
+                    <template #icon><FileSpreadsheet :size="14" /></template>
+                    批量文本
+                  </n-button>
+                </div>
+              </th>
+            </tr>
             <tr v-if="frame.single">
               <th :colspan="slFlatCols.length" class="group-th struct-banner">
                 ⤷ {{ frame.label }}<template v-if="slDef">〈{{ slDef.name }}〉</template>
@@ -618,7 +525,7 @@ function dictApplyText() {
                   ⤷ {{ run.group }}
                 </th>
               </template>
-              <th v-if="!frame.single" rowspan="2" style="width:150px">操作</th>
+              <th v-if="!frame.single" rowspan="2" class="operation-column">操作</th>
             </tr>
             <tr>
               <template v-for="(run, ri) in slHeaderRuns" :key="ri">
@@ -642,13 +549,11 @@ function dictApplyText() {
                     :model-value="cellByPath(item, col.path).value"
                     @update:model-value="cellByPath(item, col.path).value = $event"
                   />
-                  <button
-                    v-else-if="isComplexType(col.paramType) || isListType(col.paramType)"
-                    class="enter-btn small"
-                    @click="slEnterFlat(item, col)"
-                  >
-                    {{ summarize(col.paramType, cellByPath(item, col.path).value) }} ▸
-                  </button>
+                  <FrameView
+                    v-else-if="isComplexType(col.paramType)"
+                    :frame="buildInlineFrame(col.label, col.paramType, cellByPath(item, col.path).value)"
+                    :editable-schema="false"
+                  />
                   <ScalarValue
                     v-else
                     :param-type="col.paramType"
@@ -658,11 +563,13 @@ function dictApplyText() {
                 </template>
                 <span v-else class="hint">—</span>
               </td>
-              <td v-if="!frame.single">
-                <button class="ghost icon-btn" title="复制整行" @click="slDup(ri)">⧉</button>
-                <button class="ghost icon-btn" @click="slMove(ri, -1)" :disabled="ri === 0">↑</button>
-                <button class="ghost icon-btn" @click="slMove(ri, 1)" :disabled="ri === slRows.length - 1">↓</button>
-                <button class="ghost icon-btn danger" @click="slRemove(ri)">✕</button>
+              <td v-if="!frame.single" class="operation-column">
+                <div class="row-actions">
+                  <ActionIconButton label="复制整行" :icon="Copy" @click="slDup(ri)" />
+                  <ActionIconButton label="上移" :icon="ArrowUp" :disabled="ri === 0" @click="slMove(ri, -1)" />
+                  <ActionIconButton label="下移" :icon="ArrowDown" :disabled="ri === slRows.length - 1" @click="slMove(ri, 1)" />
+                  <ActionIconButton label="删除" :icon="Trash2" danger @click="slRemove(ri)" />
+                </div>
               </td>
             </tr>
             <tr v-if="slRows.length === 0"><td :colspan="slFlatCols.length + 2" class="hint">空列表。</td></tr>
@@ -670,15 +577,30 @@ function dictApplyText() {
         </table>
 
         <!-- 无定义时回退：按位置显示 -->
-        <table v-else class="grid-table">
+        <table v-else v-resizable-columns class="grid-table">
           <thead>
+            <tr v-if="!frame.single">
+              <th :colspan="slCols.length + 2" class="mode-header-cell">
+                <div class="table-mode-header">
+                  <span class="table-mode-meta">{{ slRows.length }} 项 · 按位置显示</span>
+                  <n-button size="tiny" type="primary" @click="slMode = 'grid'">
+                    <template #icon><Table2 :size="14" /></template>
+                    表格
+                  </n-button>
+                  <n-button size="tiny" secondary @click="slGenTsv">
+                    <template #icon><FileSpreadsheet :size="14" /></template>
+                    批量文本
+                  </n-button>
+                </div>
+              </th>
+            </tr>
             <tr v-if="frame.single">
               <th :colspan="slCols.length" class="group-th struct-banner">⤷ {{ frame.label }}</th>
             </tr>
             <tr>
               <th v-if="!frame.single" style="width:34px">#</th>
               <th v-for="col in slCols" :key="col.i">{{ col.key }}<br /><span class="hint">{{ getTypeMeta(col.paramType).title }}</span></th>
-              <th v-if="!frame.single" style="width:150px">操作</th>
+              <th v-if="!frame.single" class="operation-column">操作</th>
             </tr>
           </thead>
           <tbody>
@@ -691,13 +613,11 @@ function dictApplyText() {
                   :model-value="slCell(item, col.i).value"
                   @update:model-value="slCell(item, col.i).value = $event"
                 />
-                <button
-                  v-else-if="isComplexType(col.paramType) || isListType(col.paramType)"
-                  class="enter-btn small"
-                  @click="slEnterCell(item, col)"
-                >
-                  {{ summarize(col.paramType, slCell(item, col.i)?.value) }} ▸
-                </button>
+                <FrameView
+                  v-else-if="isComplexType(col.paramType) && slCell(item, col.i)"
+                  :frame="buildInlineFrame(col.key, col.paramType, slCell(item, col.i).value)"
+                  :editable-schema="false"
+                />
                 <ScalarValue
                   v-else-if="slCell(item, col.i)"
                   :param-type="col.paramType"
@@ -705,30 +625,47 @@ function dictApplyText() {
                   @update:model-value="slCell(item, col.i).value = $event"
                 />
               </td>
-              <td v-if="!frame.single">
-                <button class="ghost icon-btn" title="复制整行" @click="slDup(ri)">⧉</button>
-                <button class="ghost icon-btn" @click="slMove(ri, -1)" :disabled="ri === 0">↑</button>
-                <button class="ghost icon-btn" @click="slMove(ri, 1)" :disabled="ri === slRows.length - 1">↓</button>
-                <button class="ghost icon-btn danger" @click="slRemove(ri)">✕</button>
+              <td v-if="!frame.single" class="operation-column">
+                <div class="row-actions">
+                  <ActionIconButton label="复制整行" :icon="Copy" @click="slDup(ri)" />
+                  <ActionIconButton label="上移" :icon="ArrowUp" :disabled="ri === 0" @click="slMove(ri, -1)" />
+                  <ActionIconButton label="下移" :icon="ArrowDown" :disabled="ri === slRows.length - 1" @click="slMove(ri, 1)" />
+                  <ActionIconButton label="删除" :icon="Trash2" danger @click="slRemove(ri)" />
+                </div>
               </td>
             </tr>
             <tr v-if="slRows.length === 0"><td :colspan="slCols.length + 2" class="hint">空列表。</td></tr>
           </tbody>
         </table>
       </div>
-      <button v-if="!frame.single" class="primary" style="margin-top:8px" @click="slAdd">+ 添加项</button>
+      <n-button v-if="!frame.single" type="primary" size="small" style="margin-top:8px" @click="slAdd">
+        <template #icon><Plus :size="15" /></template>
+        添加项
+      </n-button>
     </template>
 
     <div v-else>
+      <div class="tsv-mode-header">
+        <span class="table-mode-meta">{{ slRows.length }} 项</span>
+        <n-button size="tiny" secondary @click="slMode = 'grid'">
+          <template #icon><Table2 :size="14" /></template>
+          表格
+        </n-button>
+        <n-button size="tiny" type="primary">
+          <template #icon><FileSpreadsheet :size="14" /></template>
+          批量文本
+        </n-button>
+      </div>
       <p class="hint">
         第一行为列名（只读参考）。每行一个结构体，列之间用 <b>Tab</b> 分隔，可从 Excel 整块粘贴/复制。
         嵌套的定长结构体已<b>拍平成点分列</b>（如 <code>需求货币.摩拉</code>）直接填值；
-        列表字段用 <b>|</b> 分隔多个值（如 <code>1|2|3</code>）；仅变长的结构体列表/字典以 JSON 表示。
+        列表字段与复合结构使用 JSON；文本中的 Tab、换行与引号会自动转义。
       </p>
       <textarea v-model="slText" class="tsv" style="min-height:320px"></textarea>
+      <div v-if="tableError" class="error">{{ tableError }}</div>
       <div class="toolbar" style="margin-top:8px">
-        <button class="primary" @click="slApplyTsv">应用文本</button>
-        <button @click="slMode = 'grid'">取消</button>
+        <n-button type="primary" size="small" @click="slApplyTsv">应用文本</n-button>
+        <n-button size="small" @click="slMode = 'grid'">取消</n-button>
       </div>
     </div>
   </div>
@@ -736,22 +673,30 @@ function dictApplyText() {
   <!-- ============ dict（键值表格） ============ -->
   <div v-else-if="frame.kind === 'dict'">
     <div class="toolbar">
-      <button v-if="dictScalar" :class="{ primary: dictMode === 'form' }" @click="dictMode = 'form'">表单</button>
-      <button v-if="dictScalar" :class="{ primary: dictMode === 'text' }" @click="dictOpenText">批量文本</button>
+      <n-button v-if="dictScalar" size="small" :type="dictMode === 'form' ? 'primary' : 'default'" :secondary="dictMode !== 'form'" @click="dictMode = 'form'">
+        <template #icon><Table2 :size="15" /></template>
+        表格
+      </n-button>
+      <n-button v-if="dictScalar" size="small" :type="dictMode === 'text' ? 'primary' : 'default'" :secondary="dictMode !== 'text'" @click="dictOpenText">
+        <template #icon><FileSpreadsheet :size="15" /></template>
+        批量文本
+      </n-button>
       <span class="hint">键：{{ dictKeyType }} · 值：{{ dictValType }} · 共 {{ dictEntries.length }} 条</span>
     </div>
 
     <div v-if="dictMode === 'form'">
-      <table class="grid-table">
-        <thead><tr><th style="width:34px">#</th><th style="width:40%">键</th><th>值</th><th style="width:130px">操作</th></tr></thead>
+      <table v-resizable-columns class="grid-table">
+        <thead><tr><th style="width:34px">#</th><th style="width:40%">键</th><th>值</th><th class="operation-column">操作</th></tr></thead>
         <tbody>
           <tr v-for="(entry, i) in dictEntries" :key="i">
             <td>{{ i }}</td>
             <td><ScalarValue :param-type="dictKeyType" :model-value="entry.key.value" @update:model-value="entry.key.value = $event" /></td>
             <td>
-              <button v-if="dictValComplex" class="enter-btn small" @click="dictEnterValue(entry)">
-                {{ getTypeMeta(dictValType).title }}<template v-if="refName(dictValType, entry.value.value)">〈{{ refName(dictValType, entry.value.value) }}〉</template> · {{ summarize(dictValType, entry.value.value) }} ▸
-              </button>
+              <FrameView
+                v-if="dictValComplex"
+                :frame="buildInlineFrame('值', dictValType, entry.value.value)"
+                :editable-schema="false"
+              />
               <InlineList
                 v-else-if="dictValList"
                 :item-type="listElementType(dictValType)"
@@ -760,47 +705,57 @@ function dictApplyText() {
               />
               <ScalarValue v-else :param-type="dictValType" :model-value="entry.value.value" @update:model-value="entry.value.value = $event" />
             </td>
-            <td>
-              <button class="ghost icon-btn" title="复制此条" @click="dictDup(i)">⧉</button>
-              <button class="ghost icon-btn" @click="dictMove(i, -1)" :disabled="i === 0">↑</button>
-              <button class="ghost icon-btn" @click="dictMove(i, 1)" :disabled="i === dictEntries.length - 1">↓</button>
-              <button class="ghost icon-btn danger" @click="dictRemove(i)">✕</button>
+            <td class="operation-column">
+              <div class="row-actions">
+                <ActionIconButton label="复制此条" :icon="Copy" @click="dictDup(i)" />
+                <ActionIconButton label="上移" :icon="ArrowUp" :disabled="i === 0" @click="dictMove(i, -1)" />
+                <ActionIconButton label="下移" :icon="ArrowDown" :disabled="i === dictEntries.length - 1" @click="dictMove(i, 1)" />
+                <ActionIconButton label="删除" :icon="Trash2" danger @click="dictRemove(i)" />
+              </div>
             </td>
           </tr>
           <tr v-if="dictEntries.length === 0"><td colspan="4" class="hint">空字典。</td></tr>
         </tbody>
       </table>
-      <button class="primary" style="margin-top:8px" @click="dictAdd">+ 添加条目</button>
+      <n-button type="primary" size="small" style="margin-top:8px" @click="dictAdd">
+        <template #icon><Plus :size="15" /></template>
+        添加条目
+      </n-button>
     </div>
 
     <div v-else>
-      <p class="hint">每行一条，格式：键 &lt;Tab&gt; 值（可从 Excel 两列粘贴）。</p>
+      <p class="hint">首行为“键 / 值”表头；可从 Excel 两列粘贴，Tab、换行与引号会自动转义。</p>
       <textarea v-model="dictText" style="min-height:280px"></textarea>
+      <div v-if="tableError" class="error">{{ tableError }}</div>
       <div class="toolbar" style="margin-top:8px">
-        <button class="primary" @click="dictApplyText">应用文本</button>
-        <button @click="dictMode = 'form'">取消</button>
+        <n-button type="primary" size="small" @click="dictApplyText">应用文本</n-button>
+        <n-button size="small" @click="dictMode = 'form'">取消</n-button>
       </div>
     </div>
   </div>
 </template>
 
 <style scoped>
-.enter-btn {
-  display: inline-flex; align-items: center; gap: 8px;
-  background: var(--panel-2); border: 1px solid var(--border); border-radius: 6px;
-  padding: 4px 10px; cursor: pointer; color: var(--text);
-}
-.enter-btn:hover { border-color: var(--primary); }
-.enter-btn .summary { color: var(--muted); font-size: 12px; }
-.enter-btn .arrow { color: var(--primary); font-size: 12px; }
-.enter-btn.small { padding: 2px 8px; font-size: 12px; }
-
 .ref-row { display: flex; align-items: center; gap: 6px; flex-wrap: wrap; }
 .ref-row select { min-width: 120px; }
 
-.collapse-head { display: flex; align-items: center; gap: 4px; }
+.mode-header-cell { padding: 6px 8px !important; background: rgba(255, 255, 255, 0.025); }
+.table-mode-header,
+.tsv-mode-header { display: flex; align-items: center; justify-content: flex-end; gap: 6px; }
+.table-mode-meta { margin-right: auto; color: var(--muted); font-size: 11px; font-weight: 500; }
+.tsv-mode-header {
+  margin-bottom: 8px;
+  padding: 6px 8px;
+  border: 1px solid var(--border);
+  border-radius: 8px;
+  background: rgba(255, 255, 255, 0.025);
+}
+
+.complex-summary-row { display: flex; align-items: center; gap: 6px; flex-wrap: wrap; }
+.complex-summary { color: var(--muted); font-size: 12px; }
 .ref-name { color: #c9d2ff; font-size: 12px; }
 .expand-row > td { background: rgba(108, 140, 255, 0.04); padding: 6px 8px; }
+.row-actions { display: flex; align-items: center; gap: 2px; flex-wrap: nowrap; }
 
 .grid-scroll { overflow-x: auto; }
 .grid-table { border-collapse: collapse; width: 100%; }

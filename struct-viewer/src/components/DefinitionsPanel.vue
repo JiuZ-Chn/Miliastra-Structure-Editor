@@ -1,7 +1,10 @@
 <script setup>
 import { ref } from 'vue'
+import { Braces, Download, FilePlus2, FileUp, Plus, Trash2 } from '@lucide/vue'
+import { NButton, NInput } from 'naive-ui'
 import { useWorkspaceStore } from '../stores/workspace.js'
 import { toJSON } from '../lib/miliastra.js'
+import ActionIconButton from './ActionIconButton.vue'
 
 const store = useWorkspaceStore()
 const importOpen = ref(false)
@@ -76,9 +79,9 @@ function download(text, filename) {
           <div class="meta">{{ d.fields.length }} 字段 · 索引 {{ d.structId }}</div>
         </div>
         <div class="list-item-ops">
-          <button class="ghost icon-btn" title="导出" @click.stop="exportDef(d.id)">⬇</button>
-          <button class="ghost icon-btn primary-plus" title="新建变量" @click.stop="store.addVariable(d.id)">+变量</button>
-          <button class="ghost icon-btn danger" title="删除" @click.stop="store.removeDefinition(d.id)">✕</button>
+          <ActionIconButton label="导出定义" :icon="Download" compact @click.stop="exportDef(d.id)" />
+          <ActionIconButton label="基于此定义新建变量" :icon="FilePlus2" compact primary @click.stop="store.addVariable(d.id)" />
+          <ActionIconButton label="删除定义" :icon="Trash2" compact danger @click.stop="store.removeDefinition(d.id)" />
         </div>
       </div>
       <div v-if="store.definitions.length === 0" class="empty">
@@ -87,9 +90,18 @@ function download(text, filename) {
     </div>
 
     <div class="col-foot">
-      <button class="primary" @click="store.addDefinition()">+ 新建</button>
-      <button @click="pickFile">从文件导入</button>
-      <button @click="importOpen = !importOpen">从 JSON 导入</button>
+      <n-button type="primary" size="small" @click="store.addDefinition()">
+        <template #icon><Plus :size="15" /></template>
+        新建
+      </n-button>
+      <n-button size="small" @click="pickFile">
+        <template #icon><FileUp :size="15" /></template>
+        文件导入
+      </n-button>
+      <n-button size="small" @click="importOpen = !importOpen">
+        <template #icon><Braces :size="15" /></template>
+        JSON 导入
+      </n-button>
       <input
         ref="fileInput"
         type="file"
@@ -101,10 +113,15 @@ function download(text, filename) {
     </div>
 
     <div v-if="importOpen" class="import-box">
-      <textarea v-model="importText" placeholder='粘贴“结构体”定义 JSON'></textarea>
-      <div class="toolbar">
-        <button class="primary" @click="doImport">导入</button>
-        <button @click="importOpen = false">取消</button>
+      <n-input
+        v-model:value="importText"
+        type="textarea"
+        :rows="6"
+        placeholder='粘贴“结构体”定义 JSON'
+      />
+      <div class="toolbar" style="margin-top:8px">
+        <n-button type="primary" size="small" @click="doImport">导入</n-button>
+        <n-button size="small" @click="importOpen = false">取消</n-button>
       </div>
       <div v-if="error" class="error">{{ error }}</div>
     </div>
@@ -112,19 +129,19 @@ function download(text, filename) {
 </template>
 
 <style scoped>
-.col { display: flex; flex-direction: column; height: 100%; border-right: 1px solid var(--border); }
-.col-head { padding: 12px; border-bottom: 1px solid var(--border); }
-.col-head h2 { margin: 0; font-size: 14px; }
+.col { display: flex; flex-direction: column; height: 100%; border-right: 1px solid var(--border); background: rgba(255, 255, 255, 0.012); }
+.col-head { padding: 12px 14px; border-bottom: 1px solid var(--border); }
+.col-head h2 { margin: 0; font-size: 13px; font-weight: 600; color: var(--text); letter-spacing: 0.02em; }
 .col-body { flex: 1; min-height: 0; overflow-y: auto; padding: 8px; }
 .col-foot { padding: 8px; border-top: 1px solid var(--border); display: flex; gap: 6px; flex-wrap: wrap; }
-.list-item { display: flex; align-items: center; justify-content: space-between; padding: 8px 10px; border-radius: 6px; cursor: pointer; margin-bottom: 4px; border: 1px solid transparent; }
-.list-item:hover { background: var(--panel-2); }
-.list-item.active { background: var(--panel-2); border-color: var(--primary); }
+.list-item { position: relative; display: flex; align-items: center; justify-content: space-between; padding: 8px 10px 8px 12px; border-radius: 8px; cursor: pointer; margin-bottom: 4px; border: 1px solid transparent; transition: background 0.15s, border-color 0.15s; }
+.list-item::before { content: ""; position: absolute; left: 4px; top: 50%; transform: translateY(-50%); width: 3px; height: 0; border-radius: 3px; background: var(--primary); transition: height 0.18s; }
+.list-item:hover { background: rgba(255, 255, 255, 0.04); }
+.list-item.active { background: var(--primary-2); border-color: rgba(124, 108, 255, 0.35); }
+.list-item.active::before { height: 60%; }
 .list-item .name { font-size: 14px; }
 .list-item .meta { font-size: 11px; color: var(--muted); }
 .list-item-ops { display: flex; gap: 2px; align-items: center; }
-.primary-plus { color: var(--primary); }
 .empty { color: var(--muted); font-size: 12px; padding: 12px; }
 .import-box { padding: 8px; border-top: 1px solid var(--border); }
-.import-box textarea { min-height: 120px; }
 </style>

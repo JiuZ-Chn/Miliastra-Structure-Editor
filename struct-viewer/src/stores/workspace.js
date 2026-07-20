@@ -1,5 +1,6 @@
 import { defineStore } from 'pinia'
 import {
+  PARAM_TYPE_META,
   parseStructDefinition,
   parseStructVariable,
   buildStructDefinition,
@@ -9,25 +10,121 @@ import {
 } from '../lib/miliastra.js'
 
 const STORAGE_KEY = 'miliastra-struct-viewer'
+const STORAGE_VERSION = 1
+const PERSIST_DELAY = 150
 
 let uid = 1
+let persistTimer = null
 const nextId = () => uid++
-
-/** 生成一个游戏风格的 structId */
-function genStructId() {
-  return String(1077936129 + Math.floor(Math.random() * 100000))
-}
 
 function createWorkspace(name = '存档 1') {
   return { id: nextId(), name, definitions: [], variables: [] }
+}
+
+function cloneValue(value) {
+  return JSON.parse(JSON.stringify(value))
 }
 
 function cloneFields(fields) {
   return fields.map((f) => ({
     key: f.key,
     paramType: f.paramType,
-    value: JSON.parse(JSON.stringify(f.value))
+    value: cloneValue(f.value)
   }))
+}
+
+function isBoundToDefinition(variable, definition) {
+  return variable.defId === definition.id || (
+    variable.defId == null &&
+    Boolean(definition.structId) &&
+    variable.structId === definition.structId
+  )
+}
+
+function compatibleField(variableField, definitionField) {
+  if (!variableField || variableField.paramType !== definitionField.paramType) return false
+  const current = variableField.value
+  const expected = definitionField.value
+
+  if (definitionField.paramType === 'Struct' || definitionField.paramType === 'StructList') {
+    return String(current?.structId ?? '') === String(expected?.structId ?? '')
+  }
+  if (definitionField.paramType === 'Dict') {
+    return current?.key_type === expected?.key_type &&
+      current?.value_type === expected?.value_type &&
+      String(current?.value_structId ?? '') === String(expected?.value_structId ?? '')
+  }
+  return true
+}
+
+function reconcileVariable(variable, definition) {
+  const previous = variable.fields ?? []
+  variable.defId = definition.id
+  variable.structId = definition.structId
+  variable.fields = definition.fields.map((field, index) => ({
+    key: field.key,
+    paramType: field.paramType,
+    value: compatibleField(previous[index], field)
+      ? cloneValue(previous[index].value)
+      : cloneValue(field.value)
+  }))
+}
+
+function assertStoredField(field, path) {
+  if (!field || typeof field !== 'object' || Array.isArray(field)) throw new Error(`${path} 不是对象`)
+  if (typeof field.key !== 'string') throw new Error(`${path}.key 不是字符串`)
+  if (!PARAM_TYPE_META[field.paramType]) throw new Error(`${path}.paramType 无效`)
+  if (!('value' in field)) throw new Error(`${path}.value 缺失`)
+}
+
+function validateStoredData(data) {
+  if (!data || typeof data !== 'object' || !Array.isArray(data.workspaces)) {
+    throw new Error('workspaces 必须是数组')
+  }
+  const ids = new Set()
+  const addId = (id, path) => {
+    if (!Number.isInteger(id) || id < 1) throw new Error(`${path}.id 无效`)
+    if (ids.has(id)) throw new Error(`${path}.id 重复`)
+    ids.add(id)
+  }
+
+  data.workspaces.forEach((workspace, workspaceIndex) => {
+    const path = `workspaces[${workspaceIndex}]`
+    if (!workspace || typeof workspace !== 'object' || Array.isArray(workspace)) throw new Error(`${path} 不是对象`)
+    addId(workspace.id, path)
+    if (typeof workspace.name !== 'string') throw new Error(`${path}.name 无效`)
+    if (!Array.isArray(workspace.definitions) || !Array.isArray(workspace.variables)) {
+      throw new Error(`${path} 的 definitions/variables 必须是数组`)
+    }
+    workspace.definitions.forEach((definition, index) => {
+      const itemPath = `${path}.definitions[${index}]`
+      addId(definition?.id, itemPath)
+      if (typeof definition.name !== 'string' || typeof definition.structId !== 'string' || !Array.isArray(definition.fields)) {
+        throw new Error(`${itemPath} 格式无效`)
+      }
+      if (definition.structId && !/^\d+$/.test(definition.structId)) throw new Error(`${itemPath}.structId 无效`)
+      definition.fields.forEach((field, fieldIndex) => assertStoredField(field, `${itemPath}.fields[${fieldIndex}]`))
+      parseStructDefinition(buildStructDefinition(definition))
+    })
+    workspace.variables.forEach((variable, index) => {
+      const itemPath = `${path}.variables[${index}]`
+      addId(variable?.id, itemPath)
+      if (typeof variable.name !== 'string' || typeof variable.structId !== 'string' || !Array.isArray(variable.fields)) {
+        throw new Error(`${itemPath} 格式无效`)
+      }
+      if (!/^\d+$/.test(variable.structId)) throw new Error(`${itemPath}.structId 无效`)
+      if (variable.defId != null && !Number.isInteger(variable.defId)) throw new Error(`${itemPath}.defId 无效`)
+      variable.fields.forEach((field, fieldIndex) => assertStoredField(field, `${itemPath}.fields[${fieldIndex}]`))
+      const definition = workspace.definitions.find((item) => item.id === variable.defId) ??
+        workspace.definitions.find((item) => item.structId && item.structId === variable.structId)
+      parseStructVariable(buildStructVariable(variable, variable.structId), definition?.fields ?? [])
+    })
+  })
+
+  return {
+    workspaces: data.workspaces,
+    nextUid: Math.max(Number.isInteger(data.uid) ? data.uid : 1, Math.max(0, ...ids) + 1)
+  }
 }
 
 export const useWorkspaceStore = defineStore('workspace', {
@@ -79,10 +176,19 @@ export const useWorkspaceStore = defineStore('workspace', {
     },
 
     persist() {
+      clearTimeout(persistTimer)
+      persistTimer = setTimeout(() => this.flushPersist(), PERSIST_DELAY)
+    },
+
+    flushPersist() {
       try {
-        localStorage.setItem(STORAGE_KEY, JSON.stringify({ workspaces: this.workspaces, uid }))
-      } catch {
-        /* 忽略持久化异常 */
+        localStorage.setItem(STORAGE_KEY, JSON.stringify({
+          version: STORAGE_VERSION,
+          workspaces: this.workspaces,
+          uid
+        }))
+      } catch (error) {
+        console.error('保存本地工作区失败', error)
       }
     },
 
@@ -91,11 +197,31 @@ export const useWorkspaceStore = defineStore('workspace', {
         const raw = localStorage.getItem(STORAGE_KEY)
         if (!raw) return
         const data = JSON.parse(raw)
-        this.workspaces = data.workspaces ?? []
-        uid = data.uid ?? 1
+        const validated = validateStoredData(data)
+        this.workspaces = validated.workspaces
+        uid = validated.nextUid
         this.activeWorkspaceId = this.workspaces[0]?.id ?? null
-      } catch {
-        /* 忽略读取异常 */
+        const duplicateIndexes = this.workspaces.flatMap((workspace) => {
+          const seen = new Set()
+          return workspace.definitions
+            .filter((definition) => definition.structId && (seen.has(definition.structId) || !seen.add(definition.structId)))
+            .map((definition) => definition.structId)
+        })
+        if (duplicateIndexes.length) {
+          this.message = `检测到重复结构体索引：${[...new Set(duplicateIndexes)].join('、')}，请修改后再创建变量`
+        }
+      } catch (error) {
+        const raw = localStorage.getItem(STORAGE_KEY)
+        if (raw) {
+          try {
+            localStorage.setItem(`${STORAGE_KEY}-recovery`, raw)
+            localStorage.removeItem(STORAGE_KEY)
+          } catch {
+            /* recovery 写入失败时不覆盖原始异常 */
+          }
+        }
+        this.message = '本地存档格式异常，已忽略并备份为 recovery 数据'
+        console.error('读取本地工作区失败', error)
       }
     },
 
@@ -163,7 +289,14 @@ export const useWorkspaceStore = defineStore('workspace', {
       const w = this.activeWorkspace
       if (!w) return
       const idx = w.definitions.findIndex((d) => d.id === id)
-      if (idx >= 0) w.definitions.splice(idx, 1)
+      if (idx < 0) return
+      const definition = w.definitions[idx]
+      const boundCount = w.variables.filter((variable) => isBoundToDefinition(variable, definition)).length
+      if (boundCount) {
+        this.message = `无法删除「${definition.name}」：仍有 ${boundCount} 个变量绑定此定义`
+        return
+      }
+      w.definitions.splice(idx, 1)
       if (this.activeDefId === id) {
         this.activeDefId = null
         if (this.editing === 'definition') this.editing = null
@@ -210,6 +343,10 @@ export const useWorkspaceStore = defineStore('workspace', {
         this.message = '请先在“高级数据管理”中创建结构体定义'
         return
       }
+      if (!def.structId) {
+        this.message = `请先为「${def.name}」填写结构体索引`
+        return
+      }
       const variable = {
         id: nextId(),
         name: `${def.name} 变量 ${w.variables.length + 1}`,
@@ -235,16 +372,9 @@ export const useWorkspaceStore = defineStore('workspace', {
       if (!w || !variable) return
       const def =
         w.definitions.find((d) => d.id === variable.defId) ??
-        w.definitions.find((d) => d.structId === variable.structId)
+        w.definitions.find((d) => d.structId && d.structId === variable.structId)
       if (!def) return
-      variable.defId = def.id
-      variable.fields.forEach((f, i) => {
-        const df = def.fields[i]
-        if (df) {
-          f.key = df.key
-          f.paramType = df.paramType
-        }
-      })
+      reconcileVariable(variable, def)
     },
 
     removeVariable(id) {
@@ -284,7 +414,7 @@ export const useWorkspaceStore = defineStore('workspace', {
       const def = w.definitions.find((d) => d.id === defId)
       if (!def) return
       // 移除该定义原有的变量
-      const kept = w.variables.filter((v) => !(v.defId === def.id || v.structId === def.structId))
+      const kept = w.variables.filter((v) => !isBoundToDefinition(v, def))
       const rebuilt = rows.map((r, ri) => ({
         id: nextId(),
         name: r.name || `${def.name} 变量 ${ri + 1}`,
@@ -308,7 +438,7 @@ export const useWorkspaceStore = defineStore('workspace', {
       if (!obj || obj.type !== 'Struct' || !Array.isArray(obj.value)) {
         throw new Error('不是合法的“结构体变量”JSON')
       }
-      const matchedDef = w.definitions.find((d) => d.structId === obj.structId)
+      const matchedDef = w.definitions.find((d) => d.structId && d.structId === String(obj.structId))
       if (!matchedDef) {
         throw new Error(
           `当前存档未找到 structId=${obj.structId} 的结构体定义，请先在“高级数据管理”导入对应结构体`
@@ -318,7 +448,7 @@ export const useWorkspaceStore = defineStore('workspace', {
       const variable = {
         id: nextId(),
         name: `${matchedDef.name} 变量 ${w.variables.length + 1}`,
-        structId: obj.structId,
+        structId: String(obj.structId),
         defId: matchedDef.id,
         fields: parsed.fields
       }
@@ -345,8 +475,8 @@ export const useWorkspaceStore = defineStore('workspace', {
       def.fields = parsed.fields
       // 同步所有绑定该定义的变量的字段名/类型
       this.variables
-        .filter((v) => v.defId === def.id || v.structId === def.structId)
-        .forEach((v) => this.syncVariableKeys(v))
+        .filter((variable) => isBoundToDefinition(variable, def))
+        .forEach((variable) => reconcileVariable(variable, def))
       this.message = '已应用 JSON 到结构体定义'
       this.persist()
     },
@@ -374,46 +504,79 @@ export const useWorkspaceStore = defineStore('workspace', {
       this.persist()
     },
 
-    // ---------- 字段编辑（作用于当前编辑对象） ----------
+    // ---------- 结构体定义与字段编辑 ----------
+    setDefinitionStructId(id, input) {
+      const definition = this.definitions.find((item) => item.id === id)
+      if (!definition) return false
+      const structId = String(input ?? '').replace(/\D/g, '')
+      const duplicate = structId && this.definitions.some((item) => item.id !== id && item.structId === structId)
+      if (duplicate) {
+        this.message = `结构体索引 ${structId} 已被当前存档中的其他定义使用`
+        return false
+      }
+      definition.structId = structId
+      this.variables
+        .filter((variable) => isBoundToDefinition(variable, definition))
+        .forEach((variable) => reconcileVariable(variable, definition))
+      return true
+    },
+
+    syncVariablesForDefinition(id) {
+      const definition = this.definitions.find((item) => item.id === id)
+      if (!definition) return
+      this.variables
+        .filter((variable) => isBoundToDefinition(variable, definition))
+        .forEach((variable) => reconcileVariable(variable, definition))
+    },
+
+    renameField(index, key) {
+      const definition = this.activeDefinition
+      if (!definition?.fields[index]) return
+      definition.fields[index].key = key
+      this.syncVariablesForDefinition(definition.id)
+    },
+
     addField() {
-      const t = this.editingTarget
-      if (!t) return
-      t.fields.push({
-        key: `字段_${t.fields.length + 1}`,
+      const definition = this.activeDefinition
+      if (!definition) return
+      definition.fields.push({
+        key: `字段_${definition.fields.length + 1}`,
         paramType: 'Int32',
         value: defaultValueForType('Int32')
       })
-      this.persist()
+      this.syncVariablesForDefinition(definition.id)
     },
 
     removeField(index) {
-      const t = this.editingTarget
-      if (!t) return
-      t.fields.splice(index, 1)
-      this.persist()
+      const definition = this.activeDefinition
+      if (!definition) return
+      definition.fields.splice(index, 1)
+      this.syncVariablesForDefinition(definition.id)
     },
 
     moveField(index, delta) {
-      const t = this.editingTarget
-      if (!t) return
+      const definition = this.activeDefinition
+      if (!definition) return
       const target = index + delta
-      if (target < 0 || target >= t.fields.length) return
-      const [item] = t.fields.splice(index, 1)
-      t.fields.splice(target, 0, item)
-      this.persist()
+      if (target < 0 || target >= definition.fields.length) return
+      const [item] = definition.fields.splice(index, 1)
+      definition.fields.splice(target, 0, item)
+      this.variables
+        .filter((variable) => isBoundToDefinition(variable, definition))
+        .forEach((variable) => {
+          const [field] = variable.fields.splice(index, 1)
+          variable.fields.splice(target, 0, field)
+          reconcileVariable(variable, definition)
+        })
     },
 
     changeFieldType(index, paramType) {
-      const t = this.editingTarget
-      if (!t) return
-      const field = t.fields[index]
+      const definition = this.activeDefinition
+      const field = definition?.fields[index]
+      if (!field) return
       field.paramType = paramType
       field.value = defaultValueForType(paramType)
-      this.persist()
-    },
-
-    touch() {
-      this.persist()
+      this.syncVariablesForDefinition(definition.id)
     }
   }
 })

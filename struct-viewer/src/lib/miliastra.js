@@ -133,10 +133,18 @@ export function parseStructDefinition(def) {
     throw new Error('不是合法的“结构体”JSON（缺少 type=Struct 或 value 数组）')
   }
   const fields = def.value.map((item, index) => {
+    if (!item || typeof item !== 'object' || Array.isArray(item)) {
+      throw new Error(`结构体字段 [${index}] 不是合法对象`)
+    }
     const paramType = item.param_type ?? item.value?.param_type ?? 'String'
+    assertParamType(paramType, `结构体字段 [${index}]`)
+    if (!item.value || item.value.param_type !== paramType || !('value' in item.value)) {
+      throw new Error(`结构体字段 [${index}] 的类型包装不一致`)
+    }
     const rawValue = item.value && typeof item.value === 'object' && 'value' in item.value
       ? item.value.value
       : item.value
+    assertValueShape(paramType, rawValue, `结构体字段 [${index}]`)
     return {
       key: item.key ?? `字段_${index + 1}`,
       paramType,
@@ -161,9 +169,23 @@ export function parseStructVariable(variable, template = []) {
   if (!variable || variable.type !== 'Struct' || !Array.isArray(variable.value)) {
     throw new Error('不是合法的“结构体变量”JSON（缺少 type=Struct 或 value 数组）')
   }
+  if (!/^\d+$/.test(String(variable.structId ?? ''))) {
+    throw new Error('结构体变量缺少有效的结构体索引（仅允许数字）')
+  }
+  if (template.length && variable.value.length !== template.length) {
+    throw new Error(`结构体变量字段数量不匹配：期望 ${template.length}，实际 ${variable.value.length}`)
+  }
   const fields = variable.value.map((item, index) => {
+    if (!item || typeof item !== 'object' || Array.isArray(item) || !('value' in item)) {
+      throw new Error(`结构体变量字段 [${index}] 不是合法的类型包装`)
+    }
     const paramType = item.param_type ?? 'String'
     const tpl = template[index]
+    assertParamType(paramType, `结构体变量字段 [${index}]`)
+    if (tpl && tpl.paramType !== paramType) {
+      throw new Error(`结构体变量字段 [${index}] 类型不匹配：期望 ${tpl.paramType}，实际 ${paramType}`)
+    }
+    assertValueShape(paramType, item.value, `结构体变量字段 [${index}]`)
     return {
       key: tpl?.key ?? `字段_${index + 1}`,
       paramType,
@@ -174,6 +196,81 @@ export function parseStructVariable(variable, template = []) {
     structId: variable.structId ?? '',
     fields
   }
+}
+
+function assertParamType(paramType, path) {
+  if (!PARAM_TYPE_META[paramType]) {
+    throw new Error(`${path} 使用了不支持的类型：${paramType}`)
+  }
+}
+
+function assertStructEntries(entries, path) {
+  if (!Array.isArray(entries)) throw new Error(`${path}.value 必须是数组`)
+  entries.forEach((entry, index) => {
+    if (!entry || typeof entry !== 'object' || Array.isArray(entry) || !('value' in entry)) {
+      throw new Error(`${path}.value[${index}] 不是合法的类型包装`)
+    }
+    assertParamType(entry.param_type, `${path}.value[${index}]`)
+    assertValueShape(entry.param_type, entry.value, `${path}.value[${index}]`)
+  })
+}
+
+function assertValueShape(paramType, value, path) {
+  const kind = getTypeMeta(paramType).kind
+  if (kind === 'list') {
+    if (!Array.isArray(value)) throw new Error(`${path} 的 ${paramType} 值必须是数组`)
+    if (value.some((item) => typeof item !== 'string')) {
+      throw new Error(`${path} 的 ${paramType} 元素必须是字符串`)
+    }
+    return
+  }
+  if (kind === 'struct') {
+    if (!value || typeof value !== 'object' || Array.isArray(value) || value.type !== 'Struct') {
+      throw new Error(`${path} 的 Struct 值格式无效`)
+    }
+    if (!/^\d+$/.test(String(value.structId ?? ''))) {
+      throw new Error(`${path} 的 Struct 缺少有效结构体索引`)
+    }
+    assertStructEntries(value.value, path)
+    return
+  }
+  if (kind === 'structList') {
+    if (!value || typeof value !== 'object' || Array.isArray(value)) {
+      throw new Error(`${path} 的 StructList 值格式无效`)
+    }
+    if (!/^\d+$/.test(String(value.structId ?? ''))) {
+      throw new Error(`${path} 的 StructList 缺少有效结构体索引`)
+    }
+    assertStructEntries(value.value, path)
+    if (value.value.some((entry) => entry.param_type !== 'Struct')) {
+      throw new Error(`${path} 的 StructList 只能包含 Struct`)
+    }
+    return
+  }
+  if (kind === 'dict') {
+    if (!value || typeof value !== 'object' || Array.isArray(value) || value.type !== 'Dict') {
+      throw new Error(`${path} 的 Dict 值格式无效`)
+    }
+    assertParamType(value.key_type, `${path}.key_type`)
+    assertParamType(value.value_type, `${path}.value_type`)
+    if (!Array.isArray(value.value)) throw new Error(`${path}.value 必须是数组`)
+    value.value.forEach((entry, index) => {
+      if (!entry?.key || !entry?.value) throw new Error(`${path}.value[${index}] 缺少 key/value`)
+      if (entry.key.param_type !== value.key_type || entry.value.param_type !== value.value_type) {
+        throw new Error(`${path}.value[${index}] 的键值类型与字典声明不一致`)
+      }
+      assertValueShape(value.key_type, entry.key.value, `${path}.value[${index}].key`)
+      assertValueShape(value.value_type, entry.value.value, `${path}.value[${index}].value`)
+    })
+    return
+  }
+  if (typeof value !== 'string') throw new Error(`${path} 的 ${paramType} 值必须是字符串`)
+}
+
+export function validateParamValue(paramType, value, path = '值') {
+  assertParamType(paramType, path)
+  assertValueShape(paramType, value, path)
+  return true
 }
 
 /** 归一化值：按类型转换为内部编辑表示 */
@@ -274,21 +371,5 @@ export function listElementType(paramType) {
   if (!paramType || !paramType.endsWith('List')) return 'String'
   const base = paramType.slice(0, -'List'.length)
   return PARAM_TYPE_META[base] ? base : 'String'
-}
-
-/**
- * 由结构体定义生成一个“空的结构体变量值对象”（用于给 StructList / Dict 新增子项）。
- * 返回形如 { structId, type:'Struct', value:[ {param_type, value} ] }
- */
-export function blankStructValue(def) {
-  if (!def) return { structId: '', type: 'Struct', value: [] }
-  return {
-    structId: String(def.structId ?? ''),
-    type: 'Struct',
-    value: (def.fields ?? []).map((f) => ({
-      param_type: f.paramType,
-      value: JSON.parse(JSON.stringify(defaultValueForType(f.paramType)))
-    }))
-  }
 }
 

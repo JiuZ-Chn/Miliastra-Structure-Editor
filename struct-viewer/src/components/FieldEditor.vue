@@ -1,5 +1,7 @@
 <script setup>
-import { ref, computed, watch, provide } from 'vue'
+import { ref, computed, watch } from 'vue'
+import { Braces, Check, Code2, Copy, RotateCcw, Table2 } from '@lucide/vue'
+import { NButton, NInput, NTag } from 'naive-ui'
 import { useWorkspaceStore } from '../stores/workspace.js'
 import { toJSON } from '../lib/miliastra.js'
 import FrameView from './FrameView.vue'
@@ -15,10 +17,7 @@ const isVariable = computed(() => store.editing === 'variable')
 const defView = ref('schema')
 watch(() => [store.editing, target.value?.id], () => { defView.value = 'schema' })
 
-// ---- 面包屑导航栈：nav[0] 是根（定义/变量本身）----
-const nav = ref([])
-
-function rootFrame() {
+const currentFrame = computed(() => {
   const t = target.value
   if (!t) return null
   return {
@@ -27,33 +26,11 @@ function rootFrame() {
     rootFields: t.fields,
     isRoot: true
   }
-}
-
-// 当切换编辑对象时，重置导航到根
-watch(
-  () => [store.editing, target.value?.id],
-  () => {
-    const rf = rootFrame()
-    nav.value = rf ? [rf] : []
-  },
-  { immediate: true }
-)
-
-const currentFrame = computed(() => nav.value[nav.value.length - 1] || null)
-
-function navigate(frame) {
-  nav.value.push(frame)
-}
-function goTo(index) {
-  nav.value = nav.value.slice(0, index + 1)
-}
-provide('navigate', navigate)
+})
 
 // ---- structId 数字限制 ----
-function onStructIdInput(e) {
-  const digits = e.target.value.replace(/\D/g, '')
-  e.target.value = digits
-  if (target.value) target.value.structId = digits
+function onStructIdInput(val) {
+  if (target.value) store.setDefinitionStructId(target.value.id, val)
 }
 
 // ---- 深度变更自动持久化 ----
@@ -79,8 +56,6 @@ function applyJson() {
     if (isDefinition.value) store.applyJsonToDefinition(target.value.id, jsonEdit.value)
     else store.applyJsonToVariable(target.value.id, jsonEdit.value)
     jsonDirty.value = false
-    const rf = rootFrame()
-    nav.value = rf ? [rf] : []
   } catch (e) {
     jsonError.value = e.message
   }
@@ -95,37 +70,51 @@ async function copyJson() {
 <template>
   <div v-if="target" class="editor">
     <div class="editor-head">
-      <span class="chip" :class="isDefinition ? 'chip-def' : 'chip-var'">
+      <n-tag round :type="isDefinition ? 'info' : 'success'" size="small">
         {{ isDefinition ? '结构体定义' : '结构体变量' }}
-      </span>
+      </n-tag>
       <label class="inline">
-        名称
-        <input type="text" v-model="target.name" />
+        <span>名称</span>
+        <n-input v-model:value="target.name" size="small" style="width: 180px" />
       </label>
       <label class="inline">
-        结构体索引
-        <input
+        <span>结构体索引</span>
+        <n-input
           v-if="isDefinition"
-          type="text"
-          inputmode="numeric"
+          size="small"
+          style="width: 130px"
           :value="target.structId"
-          @input="onStructIdInput"
+          :status="!target.structId ? 'error' : undefined"
           placeholder="仅数字"
-          :class="{ 'need-input': isDefinition && !target.structId }"
+          @update:value="onStructIdInput"
         />
-        <span v-else class="chip" title="变量的结构体索引绑定结构体定义，不可修改">
+        <n-tag v-else size="small" title="变量的结构体索引绑定结构体定义，不可修改">
           {{ target.structId }}（绑定定义）
-        </span>
+        </n-tag>
       </label>
       <span v-if="isDefinition && !target.structId" class="need-hint">⚠ 请为该结构体填写 结构体索引（数字）</span>
     </div>
 
     <!-- 定义视图切换：结构 / 变量表 -->
     <div v-if="isDefinition" class="view-tabs">
-      <button class="view-tab" :class="{ active: defView === 'schema' }" @click="defView = 'schema'">结构定义</button>
-      <button class="view-tab" :class="{ active: defView === 'table' }" @click="defView = 'table'">
+      <n-button
+        size="small"
+        :type="defView === 'schema' ? 'primary' : 'default'"
+        :secondary="defView !== 'schema'"
+        @click="defView = 'schema'"
+      >
+        <template #icon><Braces :size="15" /></template>
+        结构定义
+      </n-button>
+      <n-button
+        size="small"
+        :type="defView === 'table' ? 'primary' : 'default'"
+        :secondary="defView !== 'table'"
+        @click="defView = 'table'"
+      >
+        <template #icon><Table2 :size="15" /></template>
         变量表（{{ store.variables.filter((v) => v.defId === target.id || v.structId === target.structId).length }}）
-      </button>
+      </n-button>
     </div>
 
     <!-- 变量表视图（方法二：一张表批量编辑该定义的全部变量） -->
@@ -133,18 +122,8 @@ async function copyJson() {
       <VariableTable />
     </div>
 
-    <!-- 结构/变量 编辑视图 -->
+    <!-- 结构/变量编辑视图：复杂值递归直接展开 -->
     <template v-else>
-      <!-- 面包屑 -->
-      <nav class="crumbs">
-        <template v-for="(f, i) in nav" :key="i">
-          <button class="crumb" :class="{ active: i === nav.length - 1 }" @click="goTo(i)">
-            {{ i === 0 ? (target.name || '根') : f.label }}
-          </button>
-          <span v-if="i < nav.length - 1" class="crumb-sep">›</span>
-        </template>
-      </nav>
-
       <div class="frame-scroll">
         <FrameView
           v-if="currentFrame"
@@ -156,16 +135,31 @@ async function copyJson() {
 
     <!-- 底部整体 JSON -->
     <div class="json-bar">
-      <button class="ghost" @click="jsonOpen = !jsonOpen">
+      <n-button text @click="jsonOpen = !jsonOpen">
+        <template #icon><Code2 :size="15" /></template>
         {{ jsonOpen ? '▾' : '▸' }} 整体 JSON（{{ isDefinition ? '结构体定义' : '结构体变量' }}）
-        <span v-if="jsonDirty" class="chip" style="color:var(--danger)">未应用</span>
-      </button>
+        <n-tag v-if="jsonDirty" size="small" type="error" round style="margin-left:6px">未应用</n-tag>
+      </n-button>
       <div v-if="jsonOpen" class="json-card">
-        <textarea :value="jsonEdit" @input="onJsonInput($event.target.value)"></textarea>
+        <n-input
+          type="textarea"
+          :rows="14"
+          :value="jsonEdit"
+          @update:value="onJsonInput"
+        />
         <div class="toolbar" style="margin-top:8px">
-          <button class="primary" @click="applyJson" :disabled="!jsonDirty">应用修改</button>
-          <button @click="resetJson" :disabled="!jsonDirty">还原</button>
-          <button @click="copyJson">复制</button>
+          <n-button type="primary" size="small" @click="applyJson" :disabled="!jsonDirty">
+            <template #icon><Check :size="15" /></template>
+            应用修改
+          </n-button>
+          <n-button size="small" @click="resetJson" :disabled="!jsonDirty">
+            <template #icon><RotateCcw :size="15" /></template>
+            还原
+          </n-button>
+          <n-button size="small" @click="copyJson">
+            <template #icon><Copy :size="15" /></template>
+            复制
+          </n-button>
         </div>
         <div v-if="jsonError" class="error">{{ jsonError }}</div>
         <p class="hint">整体 JSON 适合大批量修改：可整段粘贴替换，点击“应用修改”原地更新当前{{ isDefinition ? '定义' : '变量' }}。</p>
@@ -183,20 +177,11 @@ async function copyJson() {
 .empty-editor { display: flex; align-items: center; justify-content: center; padding: 16px; }
 .editor-head { display: flex; gap: 12px; align-items: center; flex-wrap: wrap; padding: 14px 16px 8px; }
 .inline { display: flex; flex-direction: column; gap: 4px; font-size: 12px; color: var(--muted); }
-.chip-def { background: #2b2f6a; color: #c9d2ff; }
-.chip-var { background: #14532d; color: #b6f0cf; }
-.need-input { border-color: var(--danger) !important; }
 .need-hint { color: var(--danger); font-size: 12px; }
 
-.crumbs { display: flex; align-items: center; gap: 4px; flex-wrap: wrap; padding: 4px 16px 10px; border-bottom: 1px solid var(--border); }
 .view-tabs { display: flex; gap: 6px; padding: 4px 16px 10px; border-bottom: 1px solid var(--border); }
-.view-tab { border-radius: 6px; padding: 4px 12px; }
-.view-tab.active { background: var(--primary-2); border-color: var(--primary); }.crumb { border: none; background: transparent; color: var(--muted); padding: 2px 8px; border-radius: 6px; }
-.crumb:hover { background: var(--panel-2); color: var(--text); }
-.crumb.active { color: var(--text); background: var(--panel-2); }
-.crumb-sep { color: var(--muted); }
 
-.frame-scroll { flex: 1; min-height: 0; overflow-y: auto; padding: 12px 16px; }
+.frame-scroll { flex: 1; min-height: 0; overflow: auto; padding: 12px 16px; }
 
 .json-bar { border-top: 1px solid var(--border); padding: 8px 16px; background: var(--panel); }
 .json-card { margin-top: 8px; }

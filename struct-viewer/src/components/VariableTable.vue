@@ -1,15 +1,24 @@
 <script setup>
 import { ref, computed } from 'vue'
+import { Copy, FileSpreadsheet, Pencil, Plus, Table2, Trash2 } from '@lucide/vue'
+import { NButton } from 'naive-ui'
 import { useWorkspaceStore } from '../stores/workspace.js'
 import {
-  PARAM_TYPE_META,
   isListType,
   isComplexType,
-  listElementType,
-  defaultValueForType
+  listElementType
 } from '../lib/miliastra.js'
+import {
+  assertHeader,
+  decodeTabularValue,
+  encodeTabularValue,
+  parseTsv,
+  stringifyTsv
+} from '../lib/tabular.js'
 import ScalarValue from './ScalarValue.vue'
 import InlineList from './InlineList.vue'
+import ActionIconButton from './ActionIconButton.vue'
+import FrameView from './FrameView.vue'
 
 const store = useWorkspaceStore()
 
@@ -22,15 +31,8 @@ const rows = computed(() =>
 function cell(v, i) {
   return v.fields[i] // { key, paramType, value }
 }
-function summarize(paramType, val) {
-  if (isListType(paramType)) return `${Array.isArray(val) ? val.length : 0} 项`
-  if (paramType === 'StructList') return `${val?.value?.length ?? 0} 项`
-  if (paramType === 'Dict') return `${val?.value?.length ?? 0} 条`
-  if (paramType === 'Struct') return `${val?.value?.length ?? 0} 字段`
-  return ''
-}
 function isCellComplex(paramType) {
-  return isComplexType(paramType) || isListType(paramType)
+  return isComplexType(paramType)
 }
 // 标量列表在单元格内联编辑；Vector3List 宽度有界(X/Y/Z)也可行内
 function isInlineList(paramType) {
@@ -41,70 +43,85 @@ function openVar(v) {
   store.selectVariable(v.id)
 }
 
+function buildInlineFrame(label, paramType, value) {
+  if (paramType === 'Struct') {
+    return {
+      kind: 'structList',
+      label,
+      single: true,
+      slVal: {
+        structId: value?.structId ?? '',
+        value: value ? [{ param_type: 'Struct', value }] : []
+      }
+    }
+  }
+  if (paramType === 'StructList') return { kind: 'structList', label, slVal: value }
+  if (paramType === 'Dict') return { kind: 'dict', label, dictVal: value }
+  return null
+}
+
 /* ---- TSV 批量 ---- */
 const mode = ref('grid')
 const text = ref('')
-const COL = '\t'
-const LIST = '|'
-function serCell(paramType, value) {
-  if (isListType(paramType)) return Array.isArray(value) ? value.join(LIST) : ''
-  if (isComplexType(paramType)) return JSON.stringify(value ?? null)
-  return value == null ? '' : String(value)
-}
-function parseCell(paramType, t) {
-  if (isListType(paramType)) return t === '' ? [] : t.split(LIST)
-  if (isComplexType(paramType)) {
-    try {
-      return JSON.parse(t)
-    } catch {
-      return JSON.parse(JSON.stringify(defaultValueForType(paramType)))
-    }
-  }
-  return t
-}
+const tableError = ref('')
 function genTsv() {
-  const header = ['名称', ...cols.value.map((c) => c.key)].join(COL)
+  const header = ['名称', ...cols.value.map((c) => c.key)]
   const lines = rows.value.map((v) =>
-    [v.name, ...cols.value.map((c) => serCell(c.paramType, cell(v, c.i)?.value))].join(COL)
+    [v.name, ...cols.value.map((c) => encodeTabularValue(c.paramType, cell(v, c.i)?.value))]
   )
-  text.value = [header, ...lines].join('\n')
+  text.value = stringifyTsv([header, ...lines])
+  tableError.value = ''
   mode.value = 'tsv'
 }
 function applyTsv() {
-  const lines = text.value.split('\n').slice(1) // 跳过表头
-  const parsed = lines
-    .filter((l) => l.trim() !== '')
-    .map((line) => {
-      const cells = line.split(COL)
-      return {
-        name: (cells[0] ?? '').trim(),
-        values: cols.value.map((c, ci) => parseCell(c.paramType, (cells[ci + 1] ?? '').trim()))
-      }
-    })
-  store.rebuildVariablesForDefinition(def.value.id, parsed)
-  mode.value = 'grid'
+  try {
+    const rows = parseTsv(text.value)
+    assertHeader(rows[0] ?? [], ['名称', ...cols.value.map((column) => column.key)])
+    const parsed = rows.slice(1)
+      .filter((row) => row.some((cell) => cell !== ''))
+      .map((cells) => ({
+        name: cells[0] ?? '',
+        values: cols.value.map((column, index) =>
+          decodeTabularValue(column.paramType, cells[index + 1] ?? '')
+        )
+      }))
+    store.rebuildVariablesForDefinition(def.value.id, parsed)
+    tableError.value = ''
+    mode.value = 'grid'
+  } catch (error) {
+    tableError.value = `无法应用 TSV：${error.message}`
+  }
 }
 </script>
 
 <template>
   <div v-if="def">
     <div class="toolbar">
-      <button :class="{ primary: mode === 'grid' }" @click="mode = 'grid'">表格</button>
-      <button :class="{ primary: mode === 'tsv' }" @click="genTsv">批量文本(TSV)</button>
+      <n-button size="small" :type="mode === 'grid' ? 'primary' : 'default'" :secondary="mode !== 'grid'" @click="mode = 'grid'">
+        <template #icon><Table2 :size="15" /></template>
+        表格
+      </n-button>
+      <n-button size="small" :type="mode === 'tsv' ? 'primary' : 'default'" :secondary="mode !== 'tsv'" @click="genTsv">
+        <template #icon><FileSpreadsheet :size="15" /></template>
+        批量文本
+      </n-button>
       <span class="hint">「{{ def.name }}」的全部变量 · 共 {{ rows.length }} 个</span>
       <span class="spacer"></span>
-      <button class="primary" @click="store.addVariable(def.id)">+ 新建变量</button>
+      <n-button type="primary" size="small" @click="store.addVariable(def.id)">
+        <template #icon><Plus :size="15" /></template>
+        新建变量
+      </n-button>
     </div>
 
     <template v-if="mode === 'grid'">
       <div class="grid-scroll">
-        <table class="grid-table">
+        <table v-resizable-columns class="grid-table">
           <thead>
             <tr>
               <th style="width:34px">#</th>
               <th style="min-width:120px">名称</th>
               <th v-for="col in cols" :key="col.i">{{ col.key }}<br /><span class="hint">{{ col.paramType }}</span></th>
-              <th style="width:150px">操作</th>
+              <th class="operation-column compact">操作</th>
             </tr>
           </thead>
           <tbody>
@@ -118,9 +135,11 @@ function applyTsv() {
                   :model-value="cell(v, col.i).value"
                   @update:model-value="cell(v, col.i).value = $event"
                 />
-                <button v-else-if="isCellComplex(col.paramType)" class="enter-btn small" @click="openVar(v)">
-                  {{ summarize(col.paramType, cell(v, col.i)?.value) }} ▸
-                </button>
+                <FrameView
+                  v-else-if="isCellComplex(col.paramType) && cell(v, col.i)"
+                  :frame="buildInlineFrame(col.key, col.paramType, cell(v, col.i).value)"
+                  :editable-schema="false"
+                />
                 <ScalarValue
                   v-else-if="cell(v, col.i)"
                   :param-type="col.paramType"
@@ -128,10 +147,12 @@ function applyTsv() {
                   @update:model-value="cell(v, col.i).value = $event"
                 />
               </td>
-              <td>
-                <button class="ghost icon-btn" title="打开编辑" @click="openVar(v)">✎</button>
-                <button class="ghost icon-btn" title="复制此变量" @click="store.duplicateVariable(v.id)">⧉</button>
-                <button class="ghost icon-btn danger" title="删除" @click="store.removeVariable(v.id)">✕</button>
+              <td class="operation-column compact">
+                <div class="row-actions">
+                  <ActionIconButton label="打开编辑" :icon="Pencil" @click="openVar(v)" />
+                  <ActionIconButton label="复制变量" :icon="Copy" @click="store.duplicateVariable(v.id)" />
+                  <ActionIconButton label="删除变量" :icon="Trash2" danger @click="store.removeVariable(v.id)" />
+                </div>
               </td>
             </tr>
             <tr v-if="rows.length === 0">
@@ -141,19 +162,20 @@ function applyTsv() {
         </table>
       </div>
       <p class="hint" style="margin-top:8px">
-        标量字段可直接在表内编辑；复杂字段点「进入 ▸」打开该变量单独编辑。含嵌套的列表字段建议用「批量文本(TSV)」或打开单个变量。
+        标量、列表、结构体、结构体列表与字典均直接在表内展开；数据量较大时可使用批量文本模式。
       </p>
     </template>
 
     <div v-else>
       <p class="hint">
         第一行为列名（只读参考）。每行一个变量：第一列是名称，其余列是字段值，用 <b>Tab</b> 分隔，可与 Excel 整块互贴。
-        列表字段用 <b>|</b> 分隔多值；嵌套结构体/字典以 JSON 表示。<b>应用后会重建该定义下的全部变量。</b>
+        列表字段和嵌套结构使用 JSON；文本中的 Tab、换行与引号会自动转义。<b>应用后会重建该定义下的全部变量。</b>
       </p>
       <textarea v-model="text" class="tsv"></textarea>
+      <div v-if="tableError" class="error">{{ tableError }}</div>
       <div class="toolbar" style="margin-top:8px">
-        <button class="primary" @click="applyTsv">应用文本</button>
-        <button @click="mode = 'grid'">取消</button>
+        <n-button type="primary" size="small" @click="applyTsv">应用文本</n-button>
+        <n-button size="small" @click="mode = 'grid'">取消</n-button>
       </div>
     </div>
   </div>
@@ -161,8 +183,7 @@ function applyTsv() {
 
 <style scoped>
 .spacer { flex: 1; }
-.enter-btn { display: inline-flex; align-items: center; gap: 6px; background: var(--panel-2); border: 1px solid var(--border); border-radius: 6px; padding: 2px 8px; cursor: pointer; color: var(--text); font-size: 12px; }
-.enter-btn:hover { border-color: var(--primary); }
+.row-actions { display: flex; align-items: center; gap: 2px; flex-wrap: nowrap; }
 .grid-scroll { overflow-x: auto; }
 .grid-table { border-collapse: collapse; width: 100%; }
 .grid-table th, .grid-table td { border: 1px solid var(--border); padding: 4px 6px; vertical-align: top; }
