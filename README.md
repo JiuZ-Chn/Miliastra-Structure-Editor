@@ -70,6 +70,6 @@ npm test         # 交叉验证测试
 
 ## GitHub Pages
 
-项目通过 [`.github/workflows/jekyll-gh-pages.yml`](.github/workflows/jekyll-gh-pages.yml) 自动部署静态站点。工作流保留 GitHub 生成的文件名，但实际使用 Node.js 和 Vite 构建应用。
+项目通过 [`.github/workflows/vite-gh-pages.yml`](.github/workflows/vite-gh-pages.yml) 使用 Node.js 和 Vite 自动构建并部署静态站点。
 
 首次使用时，在仓库的 **Settings → Pages → Build and deployment** 中将 Source 设为 **GitHub Actions**。之后每次推送到 `github-pages`，工作流都会依次运行测试、构建并发布 `dist`；也可以在 Actions 页面手动触发。
