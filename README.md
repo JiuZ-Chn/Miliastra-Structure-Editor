@@ -2,6 +2,8 @@
 
 将千星奇域的「结构体 / 结构体变量」与 JSON 相互转换，并在网页上可视化编辑。
 
+**在线体验：<https://jiuzx.github.io/Miliastra-Structure-Editor/>**
+
 ## 功能特性
 
 - **双向转换**：结构体（定义）↔ 结构体变量 ↔ 普通 JSON，无损互转
@@ -70,6 +72,6 @@ npm test         # 交叉验证测试
 
 ## GitHub Pages
 
-项目通过 [`.github/workflows/deploy-pages.yml`](.github/workflows/deploy-pages.yml) 自动部署静态站点。
+项目通过 [`.github/workflows/vite-gh-pages.yml`](.github/workflows/vite-gh-pages.yml) 使用 Node.js 和 Vite 自动构建并部署静态站点。
 
 首次使用时，在仓库的 **Settings → Pages → Build and deployment** 中将 Source 设为 **GitHub Actions**。之后每次推送到 `main`，工作流都会依次运行测试、构建并发布 `dist`；也可以在 Actions 页面手动触发。
