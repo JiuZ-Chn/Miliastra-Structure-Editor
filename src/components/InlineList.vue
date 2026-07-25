@@ -60,7 +60,7 @@ function append() {
   padding: 3px 4px;
   border: 1px dashed var(--border);
   border-radius: 6px;
-  background: rgba(255, 255, 255, 0.04);
+  background: var(--panel-2);
   min-width: 120px;
 }
 .li-row {

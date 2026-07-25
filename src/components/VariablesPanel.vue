@@ -1,6 +1,6 @@
 <script setup>
 import { ref } from 'vue'
-import { Braces, Download, FileUp, Plus, Trash2 } from '@lucide/vue'
+import { Braces, Download, FileUp, Plus, Table2, Trash2 } from '@lucide/vue'
 import { NButton, NInput } from 'naive-ui'
 import { useWorkspaceStore } from '../stores/workspace.js'
 import { toJSON } from '../lib/miliastra.js'
@@ -68,8 +68,12 @@ function createFromDef(defId) {
 <template>
   <div class="col">
     <div class="col-head">
-      <h2>自定义变量</h2>
-      <span class="hint">基于结构体定义的变量实例</span>
+      <span class="col-head-icon" aria-hidden="true"><Table2 :size="16" /></span>
+      <div class="col-head-copy">
+        <h2>自定义变量</h2>
+        <span>结构体变量实例</span>
+      </div>
+      <span class="col-count">{{ store.variables.length }}</span>
     </div>
 
     <div class="col-body">
@@ -78,7 +82,11 @@ function createFromDef(defId) {
         :key="v.id"
         class="list-item"
         :class="{ active: store.editing === 'variable' && v.id === store.activeVariableId }"
+        role="button"
+        tabindex="0"
         @click="store.selectVariable(v.id)"
+        @keydown.enter.prevent="store.selectVariable(v.id)"
+        @keydown.space.prevent="store.selectVariable(v.id)"
       >
         <div class="list-item-main">
           <div class="name">{{ v.name }}</div>
@@ -90,7 +98,9 @@ function createFromDef(defId) {
         </div>
       </div>
       <div v-if="store.variables.length === 0" class="empty">
-        暂无变量，点击下方“新建变量”基于某个结构体定义创建。
+        <Table2 :size="22" />
+        <strong>暂无结构体变量</strong>
+        <span>从已有定义创建，或导入变量 JSON</span>
       </div>
     </div>
 
@@ -149,19 +159,33 @@ function createFromDef(defId) {
 </template>
 
 <style scoped>
-.col { display: flex; flex-direction: column; height: 100%; border-right: 1px solid var(--border); background: rgba(255, 255, 255, 0.012); }
-.col-head { padding: 12px 14px; border-bottom: 1px solid var(--border); }
-.col-head h2 { margin: 0; font-size: 13px; font-weight: 600; color: var(--text); letter-spacing: 0.02em; }
+.col { display: flex; flex-direction: column; height: 100%; border-right: 1px solid var(--border); background: rgba(18, 13, 34, 0.72); }
+.col-head { display: flex; align-items: center; gap: 9px; min-height: 58px; padding: 10px 12px; border-bottom: 1px solid var(--border); }
+.col-head-icon { display: grid; place-items: center; flex: 0 0 30px; width: 30px; height: 30px; color: var(--info); background: rgba(125, 211, 252, 0.08); border: 1px solid rgba(125, 211, 252, 0.28); border-radius: 7px; }
+.col-head-copy { min-width: 0; }
+.col-head h2 { margin: 0 0 3px; font-size: 12px; font-weight: 600; color: var(--text); letter-spacing: 0; }
+.col-head-copy > span { display: block; color: var(--muted); font-size: 10px; }
+.col-count { display: grid; place-items: center; margin-left: auto; min-width: 24px; height: 20px; padding: 0 6px; color: var(--text-subtle); background: var(--panel-2); border: 1px solid var(--border); border-radius: 6px; font-family: var(--font-display); font-size: 10px; }
 .col-body { flex: 1; min-height: 0; overflow-y: auto; padding: 8px; }
-.col-foot { padding: 8px; border-top: 1px solid var(--border); display: flex; gap: 6px; flex-wrap: wrap; }
-.list-item { position: relative; display: flex; align-items: center; justify-content: space-between; padding: 8px 10px 8px 12px; border-radius: 8px; cursor: pointer; margin-bottom: 4px; border: 1px solid transparent; transition: background 0.15s, border-color 0.15s; }
+.col-foot { padding: 8px; border-top: 1px solid var(--border); display: flex; gap: 6px; flex-wrap: wrap; background: rgba(8, 5, 16, 0.26); }
+.list-item { position: relative; display: flex; align-items: center; justify-content: space-between; gap: 6px; min-height: 48px; padding: 7px 7px 7px 12px; border-radius: 7px; cursor: pointer; margin-bottom: 3px; border: 1px solid transparent; outline: none; transition: background 0.15s, border-color 0.15s; }
 .list-item::before { content: ""; position: absolute; left: 4px; top: 50%; transform: translateY(-50%); width: 3px; height: 0; border-radius: 3px; background: var(--primary); transition: height 0.18s; }
-.list-item:hover { background: rgba(255, 255, 255, 0.04); }
-.list-item.active { background: var(--primary-2); border-color: rgba(124, 108, 255, 0.35); }
+.list-item:hover { background: var(--panel-2); }
+.list-item:focus-visible { border-color: var(--border-strong); }
+.list-item.active { background: var(--primary-2); border-color: rgba(184, 146, 255, 0.48); }
 .list-item.active::before { height: 60%; }
-.list-item .name { font-size: 14px; }
+.list-item-main { min-width: 0; }
+.list-item .name { overflow: hidden; color: var(--text-subtle); font-size: 12px; font-weight: 600; text-overflow: ellipsis; white-space: nowrap; }
 .list-item .meta { font-size: 11px; color: var(--muted); }
-.list-item-ops { display: flex; gap: 2px; align-items: center; }
-.empty { color: var(--muted); font-size: 12px; padding: 12px; }
-.import-box { padding: 8px; border-top: 1px solid var(--border); }
+.list-item-ops { display: flex; gap: 1px; align-items: center; flex: 0 0 auto; opacity: 0; pointer-events: none; transition: opacity 0.14s ease; }
+.list-item:hover .list-item-ops, .list-item:focus-within .list-item-ops, .list-item.active .list-item-ops { opacity: 1; pointer-events: auto; }
+.empty { display: flex; min-height: 150px; flex-direction: column; align-items: center; justify-content: center; gap: 7px; padding: 18px; color: var(--muted); text-align: center; }
+.empty svg { color: var(--info); opacity: 0.72; }
+.empty strong { color: var(--text-subtle); font-size: 12px; font-weight: 600; }
+.empty span { max-width: 170px; font-size: 10px; line-height: 1.5; }
+.import-box { max-height: 48%; overflow-y: auto; padding: 10px; border-top: 1px solid var(--border); background: rgba(27, 20, 49, 0.54); }
+
+@media (hover: none) {
+  .list-item-ops { opacity: 1; pointer-events: auto; }
+}
 </style>

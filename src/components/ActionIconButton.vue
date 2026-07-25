@@ -47,7 +47,7 @@ defineEmits(['click'])
 }
 .action-icon-button:hover:not(:disabled) {
   border-color: var(--border-strong);
-  background: rgba(255, 255, 255, 0.06);
+  background: var(--panel-hover);
 }
 .action-icon-button.compact {
   flex-basis: 24px;

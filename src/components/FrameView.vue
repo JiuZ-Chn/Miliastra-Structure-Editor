@@ -1,6 +1,6 @@
 <script setup>
 import { ref, computed } from 'vue'
-import { ArrowDown, ArrowUp, Copy, FileSpreadsheet, Plus, Table2, Trash2 } from '@lucide/vue'
+import { AlertTriangle, ArrowDown, ArrowUp, Copy, FileSpreadsheet, Plus, Table2, Trash2 } from '@lucide/vue'
 import { NButton } from 'naive-ui'
 import { useWorkspaceStore } from '../stores/workspace.js'
 import {
@@ -58,13 +58,13 @@ function summarize(paramType, val) {
 
 /** 复合类型引用的结构体名称（StructList → 元素结构体；Dict 值为结构体时 → 值结构体） */
 function refName(paramType, val) {
-  if (paramType === 'StructList') {
+  if (paramType === 'Struct' || paramType === 'StructList') {
     const d = resolveDef(val && val.structId)
-    return d ? d.name : val && val.structId ? `索引 ${val.structId}` : ''
+    return d ? d.name : val && val.structId ? `需要结构体索引 ${val.structId}` : ''
   }
   if (paramType === 'Dict' && val && (val.value_type === 'Struct' || val.value_type === 'StructList')) {
     const d = resolveDef(val.value_structId)
-    return d ? d.name : val.value_structId ? `索引 ${val.value_structId}` : ''
+    return d ? d.name : val.value_structId ? `需要结构体索引 ${val.value_structId}` : ''
   }
   return ''
 }
@@ -490,6 +490,12 @@ function dictApplyText() {
   <!-- ============ structList（表格 / TSV） ============ -->
   <div v-else-if="frame.kind === 'structList'">
     <template v-if="slMode === 'grid'">
+      <div v-if="!slDef" class="missing-struct-notice">
+        <AlertTriangle :size="14" />
+        <span>缺少引用的结构体定义</span>
+        <strong>需要结构体索引：{{ frame.slVal?.structId || '未设置' }}</strong>
+        <span class="missing-struct-note">当前按位置显示已有数据</span>
+      </div>
       <div class="grid-scroll">
         <!-- 拍平列：嵌套定长结构体展开成点分列，可直接内联编辑（Excel 化） -->
         <table v-if="slFlatCols" v-resizable-columns class="grid-table">
@@ -739,7 +745,7 @@ function dictApplyText() {
 .ref-row { display: flex; align-items: center; gap: 6px; flex-wrap: wrap; }
 .ref-row select { min-width: 120px; }
 
-.mode-header-cell { padding: 6px 8px !important; background: rgba(255, 255, 255, 0.025); }
+.mode-header-cell { padding: 6px 8px !important; background: rgba(45, 34, 72, 0.88); }
 .table-mode-header,
 .tsv-mode-header { display: flex; align-items: center; justify-content: flex-end; gap: 6px; }
 .table-mode-meta { margin-right: auto; color: var(--muted); font-size: 11px; font-weight: 500; }
@@ -748,23 +754,38 @@ function dictApplyText() {
   padding: 6px 8px;
   border: 1px solid var(--border);
   border-radius: 8px;
-  background: rgba(255, 255, 255, 0.025);
+  background: rgba(45, 34, 72, 0.72);
 }
 
 .complex-summary-row { display: flex; align-items: center; gap: 6px; flex-wrap: wrap; }
 .complex-summary { color: var(--muted); font-size: 12px; }
-.ref-name { color: #c9d2ff; font-size: 12px; }
-.expand-row > td { background: rgba(108, 140, 255, 0.04); padding: 6px 8px; }
+.ref-name { color: var(--primary-hover); font-size: 12px; }
+.expand-row > td { background: rgba(27, 20, 49, 0.78); padding: 7px 8px; }
 .row-actions { display: flex; align-items: center; gap: 2px; flex-wrap: nowrap; }
 
-.grid-scroll { overflow-x: auto; }
-.grid-table { border-collapse: collapse; width: 100%; }
-.grid-table th, .grid-table td { border: 1px solid var(--border); padding: 4px 6px; vertical-align: top; }
-.grid-table th { color: var(--muted); font-size: 12px; font-weight: 600; text-align: left; white-space: nowrap; }
+.missing-struct-notice {
+  display: flex; align-items: center; gap: 7px; flex-wrap: wrap;
+  margin-bottom: 6px; padding: 7px 9px; color: var(--warning);
+  background: rgba(252, 211, 77, 0.07); border: 1px solid rgba(252, 211, 77, 0.3); border-radius: 7px;
+  font-size: 11px;
+}
+.missing-struct-notice strong { color: #fde68a; font-weight: 600; }
+.missing-struct-note { color: var(--muted); font-size: 10px; }
+
+.grid-scroll { overflow-x: auto; background: rgba(18, 13, 34, 0.5); border-radius: 7px; }
+.grid-table { border-collapse: collapse; width: 100%; background: rgba(18, 13, 34, 0.72); }
+.grid-table th, .grid-table td { border: 1px solid rgba(112, 91, 146, 0.62); padding: 5px 7px; vertical-align: top; }
+.grid-table th { color: var(--text-subtle); background: rgba(35, 26, 59, 0.94); font-size: 11px; font-weight: 600; text-align: left; white-space: nowrap; }
+.grid-table > tbody > tr > td { background: rgba(24, 17, 42, 0.86); }
+.grid-table > tbody > tr:nth-child(even) > td { background: rgba(29, 21, 49, 0.88); }
 .col-leaf { display: block; color: var(--text); }
 .col-type { display: block; font-weight: 400; }
-.group-th { text-align: center; color: #c9d2ff; background: rgba(108, 140, 255, 0.14); border-bottom: 2px solid var(--primary); }
+.grid-table th.group-th { text-align: center; color: #ddd0ff; background: rgba(62, 48, 91, 0.94); border-bottom: 2px solid var(--primary); }
 .struct-banner { text-align: left; }
-.group-leaf { background: rgba(108, 140, 255, 0.05); }
+.grid-table th.group-leaf { background: rgba(45, 34, 72, 0.92); }
 .tsv { white-space: pre; overflow-wrap: normal; overflow-x: auto; }
+
+@media (max-width: 760px) {
+  .missing-struct-note { width: 100%; margin-left: 21px; }
+}
 </style>
