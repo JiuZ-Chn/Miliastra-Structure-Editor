@@ -1,0 +1,313 @@
+{ 
+   "type" : "Struct", 
+   "struct_ype" : "basic", 
+   "name" : "复杂结构体", 
+   "value" : [ 
+      { 
+         "key" : "字符串变量", 
+         "param_type" : "String", 
+         "value" : { 
+            "param_type" : "String", 
+            "value" : ""
+         }
+      }, 
+      { 
+         "key" : "字符串列表变量", 
+         "param_type" : "StringList", 
+         "value" : { 
+            "param_type" : "StringList", 
+            "value" : [ 
+               ""
+            ]
+         }
+      }, 
+      { 
+         "key" : "整数变量", 
+         "param_type" : "Int32", 
+         "value" : { 
+            "param_type" : "Int32", 
+            "value" : "0"
+         }
+      }, 
+      { 
+         "key" : "整数列表变量", 
+         "param_type" : "Int32List", 
+         "value" : { 
+            "param_type" : "Int32List", 
+            "value" : [ 
+               "0"
+            ]
+         }
+      }, 
+      { 
+         "key" : "浮点数变量", 
+         "param_type" : "Float", 
+         "value" : { 
+            "param_type" : "Float", 
+            "value" : "0.00"
+         }
+      }, 
+      { 
+         "key" : "浮点数列表变量", 
+         "param_type" : "FloatList", 
+         "value" : { 
+            "param_type" : "FloatList", 
+            "value" : [ 
+               "0.00"
+            ]
+         }
+      }, 
+      { 
+         "key" : "布尔值", 
+         "param_type" : "Bool", 
+         "value" : { 
+            "param_type" : "Bool", 
+            "value" : "False"
+         }
+      }, 
+      { 
+         "key" : "布尔值列表变量", 
+         "param_type" : "BoolList", 
+         "value" : { 
+            "param_type" : "BoolList", 
+            "value" : [ 
+               "False"
+            ]
+         }
+      }, 
+      { 
+         "key" : "三维向量变量", 
+         "param_type" : "Vector3", 
+         "value" : { 
+            "param_type" : "Vector3", 
+            "value" : "0,0,0"
+         }
+      }, 
+      { 
+         "key" : "三维向量列表变量", 
+         "param_type" : "Vector3List", 
+         "value" : { 
+            "param_type" : "Vector3List", 
+            "value" : [ 
+               "0,0,0"
+            ]
+         }
+      }, 
+      { 
+         "key" : "实体变量", 
+         "param_type" : "Entity", 
+         "value" : { 
+            "param_type" : "Entity", 
+            "value" : "0"
+         }
+      }, 
+      { 
+         "key" : "实体列表变量", 
+         "param_type" : "EntityList", 
+         "value" : { 
+            "param_type" : "EntityList", 
+            "value" : [ 
+               "0"
+            ]
+         }
+      }, 
+      { 
+         "key" : "GUID变量", 
+         "param_type" : "Guid", 
+         "value" : { 
+            "param_type" : "Guid", 
+            "value" : "0"
+         }
+      }, 
+      { 
+         "key" : "GUID列表变量", 
+         "param_type" : "GuidList", 
+         "value" : { 
+            "param_type" : "GuidList", 
+            "value" : [ 
+               "0"
+            ]
+         }
+      }, 
+      { 
+         "key" : "配置ID变量", 
+         "param_type" : "ConfigReference", 
+         "value" : { 
+            "param_type" : "ConfigReference", 
+            "value" : "0"
+         }
+      }, 
+      { 
+         "key" : "配置ID列表变量", 
+         "param_type" : "ConfigReferenceList", 
+         "value" : { 
+            "param_type" : "ConfigReferenceList", 
+            "value" : [ 
+               "0"
+            ]
+         }
+      }, 
+      { 
+         "key" : "元件ID变量", 
+         "param_type" : "EntityReference", 
+         "value" : { 
+            "param_type" : "EntityReference", 
+            "value" : "0"
+         }
+      }, 
+      { 
+         "key" : "元件ID列表变量", 
+         "param_type" : "EntityReferenceList", 
+         "value" : { 
+            "param_type" : "EntityReferenceList", 
+            "value" : [ 
+               "0"
+            ]
+         }
+      }, 
+      { 
+         "key" : "阵营变量", 
+         "param_type" : "Army", 
+         "value" : { 
+            "param_type" : "Army", 
+            "value" : "0"
+         }
+      }, 
+      { 
+         "key" : "阵营列表变量", 
+         "param_type" : "ArmyList", 
+         "value" : { 
+            "param_type" : "ArmyList", 
+            "value" : [ 
+               "0"
+            ]
+         }
+      }, 
+      { 
+         "key" : "简单结构体变量", 
+         "param_type" : "Struct", 
+         "value" : { 
+            "param_type" : "Struct", 
+            "value" : { 
+               "structId" : "1077936130", 
+               "type" : "Struct", 
+               "value" : [ 
+                  { 
+                     "param_type" : "Int32", 
+                     "value" : "0"
+                  }, 
+                  { 
+                     "param_type" : "Float", 
+                     "value" : "0.00"
+                  }, 
+                  { 
+                     "param_type" : "Bool", 
+                     "value" : "False"
+                  }
+               ]
+            }
+         }
+      }, 
+      { 
+         "key" : "简单结构体列表变量", 
+         "param_type" : "StructList", 
+         "value" : { 
+            "param_type" : "StructList", 
+            "value" : { 
+               "structId" : "1077936130", 
+               "value" : [ 
+                  { 
+                     "param_type" : "Struct", 
+                     "value" : { 
+                        "structId" : "1077936130", 
+                        "type" : "Struct", 
+                        "value" : [ 
+                           { 
+                              "param_type" : "Int32", 
+                              "value" : "0"
+                           }, 
+                           { 
+                              "param_type" : "Float", 
+                              "value" : "0.00"
+                           }, 
+                           { 
+                              "param_type" : "Bool", 
+                              "value" : "False"
+                           }
+                        ]
+                     }
+                  }
+               ]
+            }
+         }
+      }, 
+      { 
+         "key" : "字典变量1", 
+         "param_type" : "Dict", 
+         "value" : { 
+            "param_type" : "Dict", 
+            "value" : { 
+               "type" : "Dict", 
+               "key_type" : "String", 
+               "value_type" : "String", 
+               "value" : [ 
+                  { 
+                     "key" : { 
+                        "param_type" : "String", 
+                        "value" : "1"
+                     }, 
+                     "value" : { 
+                        "param_type" : "String", 
+                        "value" : "2"
+                     }
+                  }
+               ]
+            }
+         }
+      }, 
+      { 
+         "key" : "字典变量2", 
+         "param_type" : "Dict", 
+         "value" : { 
+            "param_type" : "Dict", 
+            "value" : { 
+               "type" : "Dict", 
+               "key_type" : "String", 
+               "value_type" : "StringList", 
+               "value" : [ 
+               ]
+            }
+         }
+      }, 
+      { 
+         "key" : "字典变量3", 
+         "param_type" : "Dict", 
+         "value" : { 
+            "param_type" : "Dict", 
+            "value" : { 
+               "type" : "Dict", 
+               "key_type" : "String", 
+               "value_type" : "Struct", 
+               "value" : [ 
+               ], 
+               "value_structId" : "1077936130"
+            }
+         }
+      }, 
+      { 
+         "key" : "字典变量4", 
+         "param_type" : "Dict", 
+         "value" : { 
+            "param_type" : "Dict", 
+            "value" : { 
+               "type" : "Dict", 
+               "key_type" : "String", 
+               "value_type" : "StructList", 
+               "value" : [ 
+               ], 
+               "value_structId" : "1077936130"
+            }
+         }
+      }
+   ]
+}

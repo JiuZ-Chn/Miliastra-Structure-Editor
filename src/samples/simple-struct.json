@@ -1,0 +1,31 @@
+{ 
+   "type" : "Struct", 
+   "struct_ype" : "basic", 
+   "name" : "简单结构体", 
+   "value" : [ 
+      { 
+         "key" : "整数变量", 
+         "param_type" : "Int32", 
+         "value" : { 
+            "param_type" : "Int32", 
+            "value" : "0"
+         }
+      }, 
+      { 
+         "key" : "浮点数变量", 
+         "param_type" : "Float", 
+         "value" : { 
+            "param_type" : "Float", 
+            "value" : "0.00"
+         }
+      }, 
+      { 
+         "key" : "布尔值变量", 
+         "param_type" : "Bool", 
+         "value" : { 
+            "param_type" : "Bool", 
+            "value" : "False"
+         }
+      }
+   ]
+}

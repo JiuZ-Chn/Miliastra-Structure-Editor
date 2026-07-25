@@ -1,0 +1,24 @@
+{
+  "name": "miliastra-structure-editor",
+  "version": "0.1.0",
+  "private": true,
+  "type": "module",
+  "description": "Miliastra（千星奇域）结构体与结构体变量可视化编辑器",
+  "scripts": {
+    "dev": "vite",
+    "build": "vite build",
+    "preview": "vite preview",
+    "test": "vitest run"
+  },
+  "dependencies": {
+    "@lucide/vue": "^1.25.0",
+    "naive-ui": "^2.44.1",
+    "pinia": "^2.2.6",
+    "vue": "^3.5.13"
+  },
+  "devDependencies": {
+    "@vitejs/plugin-vue": "^5.2.1",
+    "vite": "^6.0.5",
+    "vitest": "^3.2.6"
+  }
+}
