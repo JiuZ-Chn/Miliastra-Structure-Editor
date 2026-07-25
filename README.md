@@ -74,4 +74,4 @@ npm test         # 交叉验证测试
 
 项目通过 [`.github/workflows/vite-gh-pages.yml`](.github/workflows/vite-gh-pages.yml) 使用 Node.js 和 Vite 自动构建并部署静态站点。
 
-首次使用时，在仓库的 **Settings → Pages → Build and deployment** 中将 Source 设为 **GitHub Actions**。之后每次推送到 `github-pages`，工作流都会依次运行测试、构建并发布 `dist`；也可以在 Actions 页面手动触发。
+首次使用时，在仓库的 **Settings → Pages → Build and deployment** 中将 Source 设为 **GitHub Actions**。之后每次推送到 `main`，工作流都会依次运行测试、构建并发布 `dist`；也可以在 Actions 页面手动触发。
