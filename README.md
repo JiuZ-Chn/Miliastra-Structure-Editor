@@ -2,6 +2,8 @@
 
 将千星奇域的「结构体 / 结构体变量」与 JSON 相互转换，并在网页上可视化编辑。
 
+**在线体验：<https://jiuzx.github.io/Miliastra-Structure-Editor/>**
+
 ## 功能特性
 
 - **双向转换**：结构体（定义）↔ 结构体变量 ↔ 普通 JSON，无损互转
