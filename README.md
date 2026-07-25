@@ -2,9 +2,6 @@
 
 将千星奇域的「结构体 / 结构体变量」与 JSON 相互转换，并在网页上可视化编辑。
 
-参考 [ugc-struct-viewer](https://github.com/xiaomoL444/ugc-struct-viewer) 与
-[在线结构体编辑器](https://tool.xiaomol444.xyz/StructViewer)。
-
 ## 功能特性
 
 - **双向转换**：结构体（定义）↔ 结构体变量 ↔ 普通 JSON，无损互转
