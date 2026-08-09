@@ -56,6 +56,8 @@ node tools/simulate-progression.mjs  # 贪心 vs 攒钱两种玩法的余裕比�
 - **关6/关7 BOSS 重复**（都是 443）。
 - **关3 精英在 8 秒出现**，低于 10 秒的设计红线。
 
+初版天赋树（30 条）保留在 `config/archive/`，里面有几个被砍掉但仍有价值的机制——尤其是「地脉能量·击杀加成」，它能直接解决开局零收益死锁。详见设计文档 6.4。
+
 ## 相关仓库
 
 [Miliastra-Structure-Editor](https://github.com/JiuZX/Miliastra-Structure-Editor) — 用于编辑这些结构化配置的可视化工具。
