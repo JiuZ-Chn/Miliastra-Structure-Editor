@@ -5,3 +5,6 @@ dist-ssr
 .DS_Store
 .vite
 coverage
+
+# 游戏数值配置已迁至 JiuZX/Miliastra，避免两处各改一份
+Configuration/
