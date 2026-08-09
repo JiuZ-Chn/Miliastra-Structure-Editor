@@ -1,0 +1,3123 @@
+{
+  "structId": "1077936137",
+  "type": "Struct",
+  "value": [
+    {
+      "param_type": "StructList",
+      "value": {
+        "structId": "1077936130",
+        "value": [
+          {
+            "param_type": "Struct",
+            "value": {
+              "structId": "1077936130",
+              "type": "Struct",
+              "value": [
+                {
+                  "param_type": "String",
+                  "value": "丘丘部落·第一关"
+                },
+                {
+                  "param_type": "StructList",
+                  "value": {
+                    "structId": "1077936129",
+                    "value": [
+                      {
+                        "param_type": "Struct",
+                        "value": {
+                          "structId": "1077936129",
+                          "type": "Struct",
+                          "value": [
+                            {
+                              "param_type": "Int32",
+                              "value": "1073741827"
+                            },
+                            {
+                              "param_type": "Bool",
+                              "value": "False"
+                            },
+                            {
+                              "param_type": "Float",
+                              "value": "2"
+                            },
+                            {
+                              "param_type": "Float",
+                              "value": "3"
+                            },
+                            {
+                              "param_type": "Float",
+                              "value": "0.8"
+                            },
+                            {
+                              "param_type": "Int32",
+                              "value": "4"
+                            },
+                            {
+                              "param_type": "Int32",
+                              "value": "9999"
+                            },
+                            {
+                              "param_type": "EntityReferenceList",
+                              "value": [
+                                "1082130438",
+                                "1082130439"
+                              ]
+                            },
+                            {
+                              "param_type": "Int32List",
+                              "value": [
+                                "1",
+                                "1"
+                              ]
+                            }
+                          ]
+                        }
+                      },
+                      {
+                        "param_type": "Struct",
+                        "value": {
+                          "structId": "1077936129",
+                          "type": "Struct",
+                          "value": [
+                            {
+                              "param_type": "Int32",
+                              "value": "1073741829"
+                            },
+                            {
+                              "param_type": "Bool",
+                              "value": "False"
+                            },
+                            {
+                              "param_type": "Float",
+                              "value": "10"
+                            },
+                            {
+                              "param_type": "Float",
+                              "value": "4"
+                            },
+                            {
+                              "param_type": "Float",
+                              "value": "0.7"
+                            },
+                            {
+                              "param_type": "Int32",
+                              "value": "3"
+                            },
+                            {
+                              "param_type": "Int32",
+                              "value": "9999"
+                            },
+                            {
+                              "param_type": "EntityReferenceList",
+                              "value": [
+                                "1082130438",
+                                "1082130439"
+                              ]
+                            },
+                            {
+                              "param_type": "Int32List",
+                              "value": [
+                                "1",
+                                "1"
+                              ]
+                            }
+                          ]
+                        }
+                      },
+                      {
+                        "param_type": "Struct",
+                        "value": {
+                          "structId": "1077936129",
+                          "type": "Struct",
+                          "value": [
+                            {
+                              "param_type": "Int32",
+                              "value": "1073741831"
+                            },
+                            {
+                              "param_type": "Bool",
+                              "value": "False"
+                            },
+                            {
+                              "param_type": "Float",
+                              "value": "14"
+                            },
+                            {
+                              "param_type": "Float",
+                              "value": "4"
+                            },
+                            {
+                              "param_type": "Float",
+                              "value": "0.7"
+                            },
+                            {
+                              "param_type": "Int32",
+                              "value": "3"
+                            },
+                            {
+                              "param_type": "Int32",
+                              "value": "9999"
+                            },
+                            {
+                              "param_type": "EntityReferenceList",
+                              "value": [
+                                "1082130438",
+                                "1082130439"
+                              ]
+                            },
+                            {
+                              "param_type": "Int32List",
+                              "value": [
+                                "1",
+                                "1"
+                              ]
+                            }
+                          ]
+                        }
+                      }
+                    ]
+                  }
+                },
+                {
+                  "param_type": "Struct",
+                  "value": {
+                    "structId": "1077936129",
+                    "type": "Struct",
+                    "value": [
+                      {
+                        "param_type": "Int32",
+                        "value": "1073741832"
+                      },
+                      {
+                        "param_type": "Bool",
+                        "value": "True"
+                      },
+                      {
+                        "param_type": "Float",
+                        "value": "0.03"
+                      },
+                      {
+                        "param_type": "Float",
+                        "value": "1.00"
+                      },
+                      {
+                        "param_type": "Float",
+                        "value": "1.00"
+                      },
+                      {
+                        "param_type": "Int32",
+                        "value": "1"
+                      },
+                      {
+                        "param_type": "Int32",
+                        "value": "1"
+                      },
+                      {
+                        "param_type": "EntityReferenceList",
+                        "value": [
+                          "1082130442"
+                        ]
+                      },
+                      {
+                        "param_type": "Int32List",
+                        "value": [
+                          "1"
+                        ]
+                      }
+                    ]
+                  }
+                },
+                {
+                  "param_type": "Int32",
+                  "value": "6"
+                }
+              ]
+            }
+          },
+          {
+            "param_type": "Struct",
+            "value": {
+              "structId": "1077936130",
+              "type": "Struct",
+              "value": [
+                {
+                  "param_type": "String",
+                  "value": "丘丘部落·第二关"
+                },
+                {
+                  "param_type": "StructList",
+                  "value": {
+                    "structId": "1077936129",
+                    "value": [
+                      {
+                        "param_type": "Struct",
+                        "value": {
+                          "structId": "1077936129",
+                          "type": "Struct",
+                          "value": [
+                            {
+                              "param_type": "Int32",
+                              "value": "1073741827"
+                            },
+                            {
+                              "param_type": "Bool",
+                              "value": "False"
+                            },
+                            {
+                              "param_type": "Float",
+                              "value": "2"
+                            },
+                            {
+                              "param_type": "Float",
+                              "value": "3"
+                            },
+                            {
+                              "param_type": "Float",
+                              "value": "0.8"
+                            },
+                            {
+                              "param_type": "Int32",
+                              "value": "5"
+                            },
+                            {
+                              "param_type": "Int32",
+                              "value": "9999"
+                            },
+                            {
+                              "param_type": "EntityReferenceList",
+                              "value": [
+                                "1082130438",
+                                "1082130439"
+                              ]
+                            },
+                            {
+                              "param_type": "Int32List",
+                              "value": [
+                                "1",
+                                "1"
+                              ]
+                            }
+                          ]
+                        }
+                      },
+                      {
+                        "param_type": "Struct",
+                        "value": {
+                          "structId": "1077936129",
+                          "type": "Struct",
+                          "value": [
+                            {
+                              "param_type": "Int32",
+                              "value": "1073741829"
+                            },
+                            {
+                              "param_type": "Bool",
+                              "value": "False"
+                            },
+                            {
+                              "param_type": "Float",
+                              "value": "10"
+                            },
+                            {
+                              "param_type": "Float",
+                              "value": "5"
+                            },
+                            {
+                              "param_type": "Float",
+                              "value": "0.75"
+                            },
+                            {
+                              "param_type": "Int32",
+                              "value": "3"
+                            },
+                            {
+                              "param_type": "Int32",
+                              "value": "9999"
+                            },
+                            {
+                              "param_type": "EntityReferenceList",
+                              "value": [
+                                "1082130438",
+                                "1082130439"
+                              ]
+                            },
+                            {
+                              "param_type": "Int32List",
+                              "value": [
+                                "3",
+                                "3"
+                              ]
+                            }
+                          ]
+                        }
+                      },
+                      {
+                        "param_type": "Struct",
+                        "value": {
+                          "structId": "1077936129",
+                          "type": "Struct",
+                          "value": [
+                            {
+                              "param_type": "Int32",
+                              "value": "1073741830"
+                            },
+                            {
+                              "param_type": "Bool",
+                              "value": "False"
+                            },
+                            {
+                              "param_type": "Float",
+                              "value": "15"
+                            },
+                            {
+                              "param_type": "Float",
+                              "value": "3"
+                            },
+                            {
+                              "param_type": "Float",
+                              "value": "0.75"
+                            },
+                            {
+                              "param_type": "Int32",
+                              "value": "2"
+                            },
+                            {
+                              "param_type": "Int32",
+                              "value": "9999"
+                            },
+                            {
+                              "param_type": "EntityReferenceList",
+                              "value": [
+                                "1082130438",
+                                "1082130439",
+                                "1082130441"
+                              ]
+                            },
+                            {
+                              "param_type": "Int32List",
+                              "value": [
+                                "2",
+                                "2",
+                                "1"
+                              ]
+                            }
+                          ]
+                        }
+                      },
+                      {
+                        "param_type": "Struct",
+                        "value": {
+                          "structId": "1077936129",
+                          "type": "Struct",
+                          "value": [
+                            {
+                              "param_type": "Int32",
+                              "value": "1073741831"
+                            },
+                            {
+                              "param_type": "Bool",
+                              "value": "False"
+                            },
+                            {
+                              "param_type": "Float",
+                              "value": "20"
+                            },
+                            {
+                              "param_type": "Float",
+                              "value": "5"
+                            },
+                            {
+                              "param_type": "Float",
+                              "value": "0.75"
+                            },
+                            {
+                              "param_type": "Int32",
+                              "value": "3"
+                            },
+                            {
+                              "param_type": "Int32",
+                              "value": "9999"
+                            },
+                            {
+                              "param_type": "EntityReferenceList",
+                              "value": [
+                                "1082130438",
+                                "1082130439"
+                              ]
+                            },
+                            {
+                              "param_type": "Int32List",
+                              "value": [
+                                "1",
+                                "1"
+                              ]
+                            }
+                          ]
+                        }
+                      }
+                    ]
+                  }
+                },
+                {
+                  "param_type": "Struct",
+                  "value": {
+                    "structId": "1077936129",
+                    "type": "Struct",
+                    "value": [
+                      {
+                        "param_type": "Int32",
+                        "value": "1073741832"
+                      },
+                      {
+                        "param_type": "Bool",
+                        "value": "True"
+                      },
+                      {
+                        "param_type": "Float",
+                        "value": "0.03"
+                      },
+                      {
+                        "param_type": "Float",
+                        "value": "1.00"
+                      },
+                      {
+                        "param_type": "Float",
+                        "value": "1.00"
+                      },
+                      {
+                        "param_type": "Int32",
+                        "value": "1"
+                      },
+                      {
+                        "param_type": "Int32",
+                        "value": "1"
+                      },
+                      {
+                        "param_type": "EntityReferenceList",
+                        "value": [
+                          "1082130443"
+                        ]
+                      },
+                      {
+                        "param_type": "Int32List",
+                        "value": [
+                          "1"
+                        ]
+                      }
+                    ]
+                  }
+                },
+                {
+                  "param_type": "Int32",
+                  "value": "8"
+                }
+              ]
+            }
+          },
+          {
+            "param_type": "Struct",
+            "value": {
+              "structId": "1077936130",
+              "type": "Struct",
+              "value": [
+                {
+                  "param_type": "String",
+                  "value": "丘丘部落·第三关"
+                },
+                {
+                  "param_type": "StructList",
+                  "value": {
+                    "structId": "1077936129",
+                    "value": [
+                      {
+                        "param_type": "Struct",
+                        "value": {
+                          "structId": "1077936129",
+                          "type": "Struct",
+                          "value": [
+                            {
+                              "param_type": "Int32",
+                              "value": "1073741826"
+                            },
+                            {
+                              "param_type": "Bool",
+                              "value": "False"
+                            },
+                            {
+                              "param_type": "Float",
+                              "value": "9"
+                            },
+                            {
+                              "param_type": "Float",
+                              "value": "3"
+                            },
+                            {
+                              "param_type": "Float",
+                              "value": "0.66"
+                            },
+                            {
+                              "param_type": "Int32",
+                              "value": "3"
+                            },
+                            {
+                              "param_type": "Int32",
+                              "value": "9999"
+                            },
+                            {
+                              "param_type": "EntityReferenceList",
+                              "value": [
+                                "1082130438",
+                                "1082130439",
+                                "1082130445",
+                                "1082130447"
+                              ]
+                            },
+                            {
+                              "param_type": "Int32List",
+                              "value": [
+                                "2",
+                                "2",
+                                "1",
+                                "1"
+                              ]
+                            }
+                          ]
+                        }
+                      },
+                      {
+                        "param_type": "Struct",
+                        "value": {
+                          "structId": "1077936129",
+                          "type": "Struct",
+                          "value": [
+                            {
+                              "param_type": "Int32",
+                              "value": "1073741827"
+                            },
+                            {
+                              "param_type": "Bool",
+                              "value": "False"
+                            },
+                            {
+                              "param_type": "Float",
+                              "value": "2"
+                            },
+                            {
+                              "param_type": "Float",
+                              "value": "3"
+                            },
+                            {
+                              "param_type": "Float",
+                              "value": "0.7"
+                            },
+                            {
+                              "param_type": "Int32",
+                              "value": "3"
+                            },
+                            {
+                              "param_type": "Int32",
+                              "value": "9999"
+                            },
+                            {
+                              "param_type": "EntityReferenceList",
+                              "value": [
+                                "1082130445",
+                                "1082130446",
+                                "1082130447"
+                              ]
+                            },
+                            {
+                              "param_type": "Int32List",
+                              "value": [
+                                "2",
+                                "1",
+                                "2"
+                              ]
+                            }
+                          ]
+                        }
+                      },
+                      {
+                        "param_type": "Struct",
+                        "value": {
+                          "structId": "1077936129",
+                          "type": "Struct",
+                          "value": [
+                            {
+                              "param_type": "Int32",
+                              "value": "1073741829"
+                            },
+                            {
+                              "param_type": "Bool",
+                              "value": "False"
+                            },
+                            {
+                              "param_type": "Float",
+                              "value": "8"
+                            },
+                            {
+                              "param_type": "Float",
+                              "value": "3"
+                            },
+                            {
+                              "param_type": "Float",
+                              "value": "0.72"
+                            },
+                            {
+                              "param_type": "Int32",
+                              "value": "2"
+                            },
+                            {
+                              "param_type": "Int32",
+                              "value": "9999"
+                            },
+                            {
+                              "param_type": "EntityReferenceList",
+                              "value": [
+                                "1082130438",
+                                "1082130439",
+                                "1082130441"
+                              ]
+                            },
+                            {
+                              "param_type": "Int32List",
+                              "value": [
+                                "3",
+                                "3",
+                                "2"
+                              ]
+                            }
+                          ]
+                        }
+                      },
+                      {
+                        "param_type": "Struct",
+                        "value": {
+                          "structId": "1077936129",
+                          "type": "Struct",
+                          "value": [
+                            {
+                              "param_type": "Int32",
+                              "value": "1073741830"
+                            },
+                            {
+                              "param_type": "Bool",
+                              "value": "False"
+                            },
+                            {
+                              "param_type": "Float",
+                              "value": "14"
+                            },
+                            {
+                              "param_type": "Float",
+                              "value": "5"
+                            },
+                            {
+                              "param_type": "Float",
+                              "value": "0.6"
+                            },
+                            {
+                              "param_type": "Int32",
+                              "value": "2"
+                            },
+                            {
+                              "param_type": "Int32",
+                              "value": "9999"
+                            },
+                            {
+                              "param_type": "EntityReferenceList",
+                              "value": [
+                                "1082130438",
+                                "1082130439",
+                                "1082130446"
+                              ]
+                            },
+                            {
+                              "param_type": "Int32List",
+                              "value": [
+                                "1",
+                                "1",
+                                "1"
+                              ]
+                            }
+                          ]
+                        }
+                      },
+                      {
+                        "param_type": "Struct",
+                        "value": {
+                          "structId": "1077936129",
+                          "type": "Struct",
+                          "value": [
+                            {
+                              "param_type": "Int32",
+                              "value": "1073741831"
+                            },
+                            {
+                              "param_type": "Bool",
+                              "value": "False"
+                            },
+                            {
+                              "param_type": "Float",
+                              "value": "19"
+                            },
+                            {
+                              "param_type": "Float",
+                              "value": "5"
+                            },
+                            {
+                              "param_type": "Float",
+                              "value": "0.6"
+                            },
+                            {
+                              "param_type": "Int32",
+                              "value": "2"
+                            },
+                            {
+                              "param_type": "Int32",
+                              "value": "9999"
+                            },
+                            {
+                              "param_type": "EntityReferenceList",
+                              "value": [
+                                "1082130446",
+                                "1082130452"
+                              ]
+                            },
+                            {
+                              "param_type": "Int32List",
+                              "value": [
+                                "1",
+                                "1"
+                              ]
+                            }
+                          ]
+                        }
+                      }
+                    ]
+                  }
+                },
+                {
+                  "param_type": "Struct",
+                  "value": {
+                    "structId": "1077936129",
+                    "type": "Struct",
+                    "value": [
+                      {
+                        "param_type": "Int32",
+                        "value": "1073741832"
+                      },
+                      {
+                        "param_type": "Bool",
+                        "value": "True"
+                      },
+                      {
+                        "param_type": "Float",
+                        "value": "0.03"
+                      },
+                      {
+                        "param_type": "Float",
+                        "value": "1.00"
+                      },
+                      {
+                        "param_type": "Float",
+                        "value": "1.00"
+                      },
+                      {
+                        "param_type": "Int32",
+                        "value": "1"
+                      },
+                      {
+                        "param_type": "Int32",
+                        "value": "1"
+                      },
+                      {
+                        "param_type": "EntityReferenceList",
+                        "value": [
+                          "1082130444"
+                        ]
+                      },
+                      {
+                        "param_type": "Int32List",
+                        "value": [
+                          "1"
+                        ]
+                      }
+                    ]
+                  }
+                },
+                {
+                  "param_type": "Int32",
+                  "value": "10"
+                }
+              ]
+            }
+          },
+          {
+            "param_type": "Struct",
+            "value": {
+              "structId": "1077936130",
+              "type": "Struct",
+              "value": [
+                {
+                  "param_type": "String",
+                  "value": "丘丘部落·第四关"
+                },
+                {
+                  "param_type": "StructList",
+                  "value": {
+                    "structId": "1077936129",
+                    "value": [
+                      {
+                        "param_type": "Struct",
+                        "value": {
+                          "structId": "1077936129",
+                          "type": "Struct",
+                          "value": [
+                            {
+                              "param_type": "Int32",
+                              "value": "1073741827"
+                            },
+                            {
+                              "param_type": "Bool",
+                              "value": "False"
+                            },
+                            {
+                              "param_type": "Float",
+                              "value": "2"
+                            },
+                            {
+                              "param_type": "Float",
+                              "value": "2.5"
+                            },
+                            {
+                              "param_type": "Float",
+                              "value": "0.80"
+                            },
+                            {
+                              "param_type": "Int32",
+                              "value": "3"
+                            },
+                            {
+                              "param_type": "Int32",
+                              "value": "9999"
+                            },
+                            {
+                              "param_type": "EntityReferenceList",
+                              "value": [
+                                "1082130438",
+                                "1082130439",
+                                "1082130452"
+                              ]
+                            },
+                            {
+                              "param_type": "Int32List",
+                              "value": [
+                                "1",
+                                "1",
+                                "2"
+                              ]
+                            }
+                          ]
+                        }
+                      },
+                      {
+                        "param_type": "Struct",
+                        "value": {
+                          "structId": "1077936129",
+                          "type": "Struct",
+                          "value": [
+                            {
+                              "param_type": "Int32",
+                              "value": "1073741829"
+                            },
+                            {
+                              "param_type": "Bool",
+                              "value": "False"
+                            },
+                            {
+                              "param_type": "Float",
+                              "value": "9"
+                            },
+                            {
+                              "param_type": "Float",
+                              "value": "2.4"
+                            },
+                            {
+                              "param_type": "Float",
+                              "value": "0.80"
+                            },
+                            {
+                              "param_type": "Int32",
+                              "value": "2"
+                            },
+                            {
+                              "param_type": "Int32",
+                              "value": "9999"
+                            },
+                            {
+                              "param_type": "EntityReferenceList",
+                              "value": [
+                                "1082130438",
+                                "1082130439",
+                                "1082130440"
+                              ]
+                            },
+                            {
+                              "param_type": "Int32List",
+                              "value": [
+                                "3",
+                                "3",
+                                "3"
+                              ]
+                            }
+                          ]
+                        }
+                      },
+                      {
+                        "param_type": "Struct",
+                        "value": {
+                          "structId": "1077936129",
+                          "type": "Struct",
+                          "value": [
+                            {
+                              "param_type": "Int32",
+                              "value": "1073741830"
+                            },
+                            {
+                              "param_type": "Bool",
+                              "value": "False"
+                            },
+                            {
+                              "param_type": "Float",
+                              "value": "15"
+                            },
+                            {
+                              "param_type": "Float",
+                              "value": "2.6"
+                            },
+                            {
+                              "param_type": "Float",
+                              "value": "0.80"
+                            },
+                            {
+                              "param_type": "Int32",
+                              "value": "3"
+                            },
+                            {
+                              "param_type": "Int32",
+                              "value": "9999"
+                            },
+                            {
+                              "param_type": "EntityReferenceList",
+                              "value": [
+                                "1082130446",
+                                "1082130454"
+                              ]
+                            },
+                            {
+                              "param_type": "Int32List",
+                              "value": [
+                                "2",
+                                "1"
+                              ]
+                            }
+                          ]
+                        }
+                      },
+                      {
+                        "param_type": "Struct",
+                        "value": {
+                          "structId": "1077936129",
+                          "type": "Struct",
+                          "value": [
+                            {
+                              "param_type": "Int32",
+                              "value": "1073741831"
+                            },
+                            {
+                              "param_type": "Bool",
+                              "value": "False"
+                            },
+                            {
+                              "param_type": "Float",
+                              "value": "20"
+                            },
+                            {
+                              "param_type": "Float",
+                              "value": "3"
+                            },
+                            {
+                              "param_type": "Float",
+                              "value": "0.9"
+                            },
+                            {
+                              "param_type": "Int32",
+                              "value": "2"
+                            },
+                            {
+                              "param_type": "Int32",
+                              "value": "9999"
+                            },
+                            {
+                              "param_type": "EntityReferenceList",
+                              "value": [
+                                "1082130438",
+                                "1082130439",
+                                "1082130441",
+                                "1082130442"
+                              ]
+                            },
+                            {
+                              "param_type": "Int32List",
+                              "value": [
+                                "3",
+                                "3",
+                                "1",
+                                "1"
+                              ]
+                            }
+                          ]
+                        }
+                      }
+                    ]
+                  }
+                },
+                {
+                  "param_type": "Struct",
+                  "value": {
+                    "structId": "1077936129",
+                    "type": "Struct",
+                    "value": [
+                      {
+                        "param_type": "Int32",
+                        "value": "1073741832"
+                      },
+                      {
+                        "param_type": "Bool",
+                        "value": "True"
+                      },
+                      {
+                        "param_type": "Float",
+                        "value": "0.03"
+                      },
+                      {
+                        "param_type": "Float",
+                        "value": "1"
+                      },
+                      {
+                        "param_type": "Float",
+                        "value": "1.00"
+                      },
+                      {
+                        "param_type": "Int32",
+                        "value": "1"
+                      },
+                      {
+                        "param_type": "Int32",
+                        "value": "1"
+                      },
+                      {
+                        "param_type": "EntityReferenceList",
+                        "value": [
+                          "1082130449"
+                        ]
+                      },
+                      {
+                        "param_type": "Int32List",
+                        "value": [
+                          "1"
+                        ]
+                      }
+                    ]
+                  }
+                },
+                {
+                  "param_type": "Int32",
+                  "value": "12"
+                }
+              ]
+            }
+          },
+          {
+            "param_type": "Struct",
+            "value": {
+              "structId": "1077936130",
+              "type": "Struct",
+              "value": [
+                {
+                  "param_type": "String",
+                  "value": "丘丘部落·第五关"
+                },
+                {
+                  "param_type": "StructList",
+                  "value": {
+                    "structId": "1077936129",
+                    "value": [
+                      {
+                        "param_type": "Struct",
+                        "value": {
+                          "structId": "1077936129",
+                          "type": "Struct",
+                          "value": [
+                            {
+                              "param_type": "Int32",
+                              "value": "1073741826"
+                            },
+                            {
+                              "param_type": "Bool",
+                              "value": "False"
+                            },
+                            {
+                              "param_type": "Float",
+                              "value": "9"
+                            },
+                            {
+                              "param_type": "Float",
+                              "value": "3.5"
+                            },
+                            {
+                              "param_type": "Float",
+                              "value": "0.80"
+                            },
+                            {
+                              "param_type": "Int32",
+                              "value": "2"
+                            },
+                            {
+                              "param_type": "Int32",
+                              "value": "9999"
+                            },
+                            {
+                              "param_type": "EntityReferenceList",
+                              "value": [
+                                "1082130445",
+                                "1082130447"
+                              ]
+                            },
+                            {
+                              "param_type": "Int32List",
+                              "value": [
+                                "1",
+                                "1"
+                              ]
+                            }
+                          ]
+                        }
+                      },
+                      {
+                        "param_type": "Struct",
+                        "value": {
+                          "structId": "1077936129",
+                          "type": "Struct",
+                          "value": [
+                            {
+                              "param_type": "Int32",
+                              "value": "1073741827"
+                            },
+                            {
+                              "param_type": "Bool",
+                              "value": "False"
+                            },
+                            {
+                              "param_type": "Float",
+                              "value": "2"
+                            },
+                            {
+                              "param_type": "Float",
+                              "value": "2"
+                            },
+                            {
+                              "param_type": "Float",
+                              "value": "0.80"
+                            },
+                            {
+                              "param_type": "Int32",
+                              "value": "3"
+                            },
+                            {
+                              "param_type": "Int32",
+                              "value": "9999"
+                            },
+                            {
+                              "param_type": "EntityReferenceList",
+                              "value": [
+                                "1082130438",
+                                "1082130439",
+                                "1082130446"
+                              ]
+                            },
+                            {
+                              "param_type": "Int32List",
+                              "value": [
+                                "2",
+                                "2",
+                                "1"
+                              ]
+                            }
+                          ]
+                        }
+                      },
+                      {
+                        "param_type": "Struct",
+                        "value": {
+                          "structId": "1077936129",
+                          "type": "Struct",
+                          "value": [
+                            {
+                              "param_type": "Int32",
+                              "value": "1073741829"
+                            },
+                            {
+                              "param_type": "Bool",
+                              "value": "False"
+                            },
+                            {
+                              "param_type": "Float",
+                              "value": "14"
+                            },
+                            {
+                              "param_type": "Float",
+                              "value": "2"
+                            },
+                            {
+                              "param_type": "Float",
+                              "value": "0.80"
+                            },
+                            {
+                              "param_type": "Int32",
+                              "value": "2"
+                            },
+                            {
+                              "param_type": "Int32",
+                              "value": "9999"
+                            },
+                            {
+                              "param_type": "EntityReferenceList",
+                              "value": [
+                                "1082130439",
+                                "1082130446",
+                                "1082130452"
+                              ]
+                            },
+                            {
+                              "param_type": "Int32List",
+                              "value": [
+                                "2",
+                                "1",
+                                "1"
+                              ]
+                            }
+                          ]
+                        }
+                      },
+                      {
+                        "param_type": "Struct",
+                        "value": {
+                          "structId": "1077936129",
+                          "type": "Struct",
+                          "value": [
+                            {
+                              "param_type": "Int32",
+                              "value": "1073741830"
+                            },
+                            {
+                              "param_type": "Bool",
+                              "value": "False"
+                            },
+                            {
+                              "param_type": "Float",
+                              "value": "18"
+                            },
+                            {
+                              "param_type": "Float",
+                              "value": "4"
+                            },
+                            {
+                              "param_type": "Float",
+                              "value": "0.80"
+                            },
+                            {
+                              "param_type": "Int32",
+                              "value": "2"
+                            },
+                            {
+                              "param_type": "Int32",
+                              "value": "9999"
+                            },
+                            {
+                              "param_type": "EntityReferenceList",
+                              "value": [
+                                "1082130441",
+                                "1082130442"
+                              ]
+                            },
+                            {
+                              "param_type": "Int32List",
+                              "value": [
+                                "1",
+                                "2"
+                              ]
+                            }
+                          ]
+                        }
+                      },
+                      {
+                        "param_type": "Struct",
+                        "value": {
+                          "structId": "1077936129",
+                          "type": "Struct",
+                          "value": [
+                            {
+                              "param_type": "Int32",
+                              "value": "1073741831"
+                            },
+                            {
+                              "param_type": "Bool",
+                              "value": "False"
+                            },
+                            {
+                              "param_type": "Float",
+                              "value": "12"
+                            },
+                            {
+                              "param_type": "Float",
+                              "value": "3.5"
+                            },
+                            {
+                              "param_type": "Float",
+                              "value": "0.75"
+                            },
+                            {
+                              "param_type": "Int32",
+                              "value": "3"
+                            },
+                            {
+                              "param_type": "Int32",
+                              "value": "9999"
+                            },
+                            {
+                              "param_type": "EntityReferenceList",
+                              "value": [
+                                "1082130446",
+                                "1082130452"
+                              ]
+                            },
+                            {
+                              "param_type": "Int32List",
+                              "value": [
+                                "2",
+                                "2"
+                              ]
+                            }
+                          ]
+                        }
+                      }
+                    ]
+                  }
+                },
+                {
+                  "param_type": "Struct",
+                  "value": {
+                    "structId": "1077936129",
+                    "type": "Struct",
+                    "value": [
+                      {
+                        "param_type": "Int32",
+                        "value": "1073741832"
+                      },
+                      {
+                        "param_type": "Bool",
+                        "value": "True"
+                      },
+                      {
+                        "param_type": "Float",
+                        "value": "0.03"
+                      },
+                      {
+                        "param_type": "Float",
+                        "value": "1"
+                      },
+                      {
+                        "param_type": "Float",
+                        "value": "1.00"
+                      },
+                      {
+                        "param_type": "Int32",
+                        "value": "1"
+                      },
+                      {
+                        "param_type": "Int32",
+                        "value": "1"
+                      },
+                      {
+                        "param_type": "EntityReferenceList",
+                        "value": [
+                          "1082130450"
+                        ]
+                      },
+                      {
+                        "param_type": "Int32List",
+                        "value": [
+                          "1"
+                        ]
+                      }
+                    ]
+                  }
+                },
+                {
+                  "param_type": "Int32",
+                  "value": "14"
+                }
+              ]
+            }
+          },
+          {
+            "param_type": "Struct",
+            "value": {
+              "structId": "1077936130",
+              "type": "Struct",
+              "value": [
+                {
+                  "param_type": "String",
+                  "value": "丘丘部落·第六关"
+                },
+                {
+                  "param_type": "StructList",
+                  "value": {
+                    "structId": "1077936129",
+                    "value": [
+                      {
+                        "param_type": "Struct",
+                        "value": {
+                          "structId": "1077936129",
+                          "type": "Struct",
+                          "value": [
+                            {
+                              "param_type": "Int32",
+                              "value": "1073741827"
+                            },
+                            {
+                              "param_type": "Bool",
+                              "value": "False"
+                            },
+                            {
+                              "param_type": "Float",
+                              "value": "2"
+                            },
+                            {
+                              "param_type": "Float",
+                              "value": "2"
+                            },
+                            {
+                              "param_type": "Float",
+                              "value": "0.85"
+                            },
+                            {
+                              "param_type": "Int32",
+                              "value": "3"
+                            },
+                            {
+                              "param_type": "Int32",
+                              "value": "9999"
+                            },
+                            {
+                              "param_type": "EntityReferenceList",
+                              "value": [
+                                "1082130438",
+                                "1082130439",
+                                "1082130451"
+                              ]
+                            },
+                            {
+                              "param_type": "Int32List",
+                              "value": [
+                                "2",
+                                "2",
+                                "1"
+                              ]
+                            }
+                          ]
+                        }
+                      },
+                      {
+                        "param_type": "Struct",
+                        "value": {
+                          "structId": "1077936129",
+                          "type": "Struct",
+                          "value": [
+                            {
+                              "param_type": "Int32",
+                              "value": "1073741829"
+                            },
+                            {
+                              "param_type": "Bool",
+                              "value": "False"
+                            },
+                            {
+                              "param_type": "Float",
+                              "value": "9"
+                            },
+                            {
+                              "param_type": "Float",
+                              "value": "3.3"
+                            },
+                            {
+                              "param_type": "Float",
+                              "value": "0.75"
+                            },
+                            {
+                              "param_type": "Int32",
+                              "value": "3"
+                            },
+                            {
+                              "param_type": "Int32",
+                              "value": "9999"
+                            },
+                            {
+                              "param_type": "EntityReferenceList",
+                              "value": [
+                                "1082130438",
+                                "1082130451",
+                                "1082130446"
+                              ]
+                            },
+                            {
+                              "param_type": "Int32List",
+                              "value": [
+                                "2",
+                                "2",
+                                "1"
+                              ]
+                            }
+                          ]
+                        }
+                      },
+                      {
+                        "param_type": "Struct",
+                        "value": {
+                          "structId": "1077936129",
+                          "type": "Struct",
+                          "value": [
+                            {
+                              "param_type": "Int32",
+                              "value": "1073741830"
+                            },
+                            {
+                              "param_type": "Bool",
+                              "value": "False"
+                            },
+                            {
+                              "param_type": "Float",
+                              "value": "12"
+                            },
+                            {
+                              "param_type": "Float",
+                              "value": "3"
+                            },
+                            {
+                              "param_type": "Float",
+                              "value": "0.90"
+                            },
+                            {
+                              "param_type": "Int32",
+                              "value": "3"
+                            },
+                            {
+                              "param_type": "Int32",
+                              "value": "9999"
+                            },
+                            {
+                              "param_type": "EntityReferenceList",
+                              "value": [
+                                "1082130446",
+                                "1082130441"
+                              ]
+                            },
+                            {
+                              "param_type": "Int32List",
+                              "value": [
+                                "2",
+                                "1"
+                              ]
+                            }
+                          ]
+                        }
+                      },
+                      {
+                        "param_type": "Struct",
+                        "value": {
+                          "structId": "1077936129",
+                          "type": "Struct",
+                          "value": [
+                            {
+                              "param_type": "Int32",
+                              "value": "1073741831"
+                            },
+                            {
+                              "param_type": "Bool",
+                              "value": "False"
+                            },
+                            {
+                              "param_type": "Float",
+                              "value": "15"
+                            },
+                            {
+                              "param_type": "Float",
+                              "value": "3"
+                            },
+                            {
+                              "param_type": "Float",
+                              "value": "0.92"
+                            },
+                            {
+                              "param_type": "Int32",
+                              "value": "3"
+                            },
+                            {
+                              "param_type": "Int32",
+                              "value": "9999"
+                            },
+                            {
+                              "param_type": "EntityReferenceList",
+                              "value": [
+                                "1082130439",
+                                "1082130451",
+                                "1082130442"
+                              ]
+                            },
+                            {
+                              "param_type": "Int32List",
+                              "value": [
+                                "1",
+                                "1",
+                                "2"
+                              ]
+                            }
+                          ]
+                        }
+                      }
+                    ]
+                  }
+                },
+                {
+                  "param_type": "Struct",
+                  "value": {
+                    "structId": "1077936129",
+                    "type": "Struct",
+                    "value": [
+                      {
+                        "param_type": "Int32",
+                        "value": "1073741832"
+                      },
+                      {
+                        "param_type": "Bool",
+                        "value": "True"
+                      },
+                      {
+                        "param_type": "Float",
+                        "value": "0.03"
+                      },
+                      {
+                        "param_type": "Float",
+                        "value": "1"
+                      },
+                      {
+                        "param_type": "Float",
+                        "value": "1"
+                      },
+                      {
+                        "param_type": "Int32",
+                        "value": "1"
+                      },
+                      {
+                        "param_type": "Int32",
+                        "value": "1"
+                      },
+                      {
+                        "param_type": "EntityReferenceList",
+                        "value": [
+                          "1082130443"
+                        ]
+                      },
+                      {
+                        "param_type": "Int32List",
+                        "value": [
+                          "1"
+                        ]
+                      }
+                    ]
+                  }
+                },
+                {
+                  "param_type": "Int32",
+                  "value": "16"
+                }
+              ]
+            }
+          },
+          {
+            "param_type": "Struct",
+            "value": {
+              "structId": "1077936130",
+              "type": "Struct",
+              "value": [
+                {
+                  "param_type": "String",
+                  "value": "丘丘部落·第七关"
+                },
+                {
+                  "param_type": "StructList",
+                  "value": {
+                    "structId": "1077936129",
+                    "value": [
+                      {
+                        "param_type": "Struct",
+                        "value": {
+                          "structId": "1077936129",
+                          "type": "Struct",
+                          "value": [
+                            {
+                              "param_type": "Int32",
+                              "value": "1073741826"
+                            },
+                            {
+                              "param_type": "Bool",
+                              "value": "False"
+                            },
+                            {
+                              "param_type": "Float",
+                              "value": "9"
+                            },
+                            {
+                              "param_type": "Float",
+                              "value": "3"
+                            },
+                            {
+                              "param_type": "Float",
+                              "value": "0.70"
+                            },
+                            {
+                              "param_type": "Int32",
+                              "value": "2"
+                            },
+                            {
+                              "param_type": "Int32",
+                              "value": "9999"
+                            },
+                            {
+                              "param_type": "EntityReferenceList",
+                              "value": [
+                                "1082130446",
+                                "1082130452"
+                              ]
+                            },
+                            {
+                              "param_type": "Int32List",
+                              "value": [
+                                "2",
+                                "1"
+                              ]
+                            }
+                          ]
+                        }
+                      },
+                      {
+                        "param_type": "Struct",
+                        "value": {
+                          "structId": "1077936129",
+                          "type": "Struct",
+                          "value": [
+                            {
+                              "param_type": "Int32",
+                              "value": "1073741827"
+                            },
+                            {
+                              "param_type": "Bool",
+                              "value": "False"
+                            },
+                            {
+                              "param_type": "Float",
+                              "value": "2"
+                            },
+                            {
+                              "param_type": "Float",
+                              "value": "2.5"
+                            },
+                            {
+                              "param_type": "Float",
+                              "value": "0.85"
+                            },
+                            {
+                              "param_type": "Int32",
+                              "value": "3"
+                            },
+                            {
+                              "param_type": "Int32",
+                              "value": "9999"
+                            },
+                            {
+                              "param_type": "EntityReferenceList",
+                              "value": [
+                                "1082130438",
+                                "1082130439",
+                                "1082130452"
+                              ]
+                            },
+                            {
+                              "param_type": "Int32List",
+                              "value": [
+                                "2",
+                                "2",
+                                "3"
+                              ]
+                            }
+                          ]
+                        }
+                      },
+                      {
+                        "param_type": "Struct",
+                        "value": {
+                          "structId": "1077936129",
+                          "type": "Struct",
+                          "value": [
+                            {
+                              "param_type": "Int32",
+                              "value": "1073741829"
+                            },
+                            {
+                              "param_type": "Bool",
+                              "value": "False"
+                            },
+                            {
+                              "param_type": "Float",
+                              "value": "13"
+                            },
+                            {
+                              "param_type": "Float",
+                              "value": "3"
+                            },
+                            {
+                              "param_type": "Float",
+                              "value": "0.80"
+                            },
+                            {
+                              "param_type": "Int32",
+                              "value": "2"
+                            },
+                            {
+                              "param_type": "Int32",
+                              "value": "9999"
+                            },
+                            {
+                              "param_type": "EntityReferenceList",
+                              "value": [
+                                "1082130439",
+                                "1082130452",
+                                "1082130442"
+                              ]
+                            },
+                            {
+                              "param_type": "Int32List",
+                              "value": [
+                                "1",
+                                "1",
+                                "2"
+                              ]
+                            }
+                          ]
+                        }
+                      },
+                      {
+                        "param_type": "Struct",
+                        "value": {
+                          "structId": "1077936129",
+                          "type": "Struct",
+                          "value": [
+                            {
+                              "param_type": "Int32",
+                              "value": "1073741830"
+                            },
+                            {
+                              "param_type": "Bool",
+                              "value": "False"
+                            },
+                            {
+                              "param_type": "Float",
+                              "value": "16"
+                            },
+                            {
+                              "param_type": "Float",
+                              "value": "2.5"
+                            },
+                            {
+                              "param_type": "Float",
+                              "value": "0.75"
+                            },
+                            {
+                              "param_type": "Int32",
+                              "value": "3"
+                            },
+                            {
+                              "param_type": "Int32",
+                              "value": "9999"
+                            },
+                            {
+                              "param_type": "EntityReferenceList",
+                              "value": [
+                                "1082130445",
+                                "1082130446",
+                                "1082130442"
+                              ]
+                            },
+                            {
+                              "param_type": "Int32List",
+                              "value": [
+                                "1",
+                                "1",
+                                "2"
+                              ]
+                            }
+                          ]
+                        }
+                      },
+                      {
+                        "param_type": "Struct",
+                        "value": {
+                          "structId": "1077936129",
+                          "type": "Struct",
+                          "value": [
+                            {
+                              "param_type": "Int32",
+                              "value": "1073741831"
+                            },
+                            {
+                              "param_type": "Bool",
+                              "value": "False"
+                            },
+                            {
+                              "param_type": "Float",
+                              "value": "11"
+                            },
+                            {
+                              "param_type": "Float",
+                              "value": "2.5"
+                            },
+                            {
+                              "param_type": "Float",
+                              "value": "0.74"
+                            },
+                            {
+                              "param_type": "Int32",
+                              "value": "2"
+                            },
+                            {
+                              "param_type": "Int32",
+                              "value": "9999"
+                            },
+                            {
+                              "param_type": "EntityReferenceList",
+                              "value": [
+                                "1082130446",
+                                "1082130442"
+                              ]
+                            },
+                            {
+                              "param_type": "Int32List",
+                              "value": [
+                                "1",
+                                "1"
+                              ]
+                            }
+                          ]
+                        }
+                      }
+                    ]
+                  }
+                },
+                {
+                  "param_type": "Struct",
+                  "value": {
+                    "structId": "1077936129",
+                    "type": "Struct",
+                    "value": [
+                      {
+                        "param_type": "Int32",
+                        "value": "1073741832"
+                      },
+                      {
+                        "param_type": "Bool",
+                        "value": "True"
+                      },
+                      {
+                        "param_type": "Float",
+                        "value": "0.03"
+                      },
+                      {
+                        "param_type": "Float",
+                        "value": "1"
+                      },
+                      {
+                        "param_type": "Float",
+                        "value": "1"
+                      },
+                      {
+                        "param_type": "Int32",
+                        "value": "1"
+                      },
+                      {
+                        "param_type": "Int32",
+                        "value": "1"
+                      },
+                      {
+                        "param_type": "EntityReferenceList",
+                        "value": [
+                          "1082130443"
+                        ]
+                      },
+                      {
+                        "param_type": "Int32List",
+                        "value": [
+                          "1"
+                        ]
+                      }
+                    ]
+                  }
+                },
+                {
+                  "param_type": "Int32",
+                  "value": "18"
+                }
+              ]
+            }
+          },
+          {
+            "param_type": "Struct",
+            "value": {
+              "structId": "1077936130",
+              "type": "Struct",
+              "value": [
+                {
+                  "param_type": "String",
+                  "value": "丘丘部落·第八关"
+                },
+                {
+                  "param_type": "StructList",
+                  "value": {
+                    "structId": "1077936129",
+                    "value": [
+                      {
+                        "param_type": "Struct",
+                        "value": {
+                          "structId": "1077936129",
+                          "type": "Struct",
+                          "value": [
+                            {
+                              "param_type": "Int32",
+                              "value": "1073741826"
+                            },
+                            {
+                              "param_type": "Bool",
+                              "value": "False"
+                            },
+                            {
+                              "param_type": "Float",
+                              "value": "9"
+                            },
+                            {
+                              "param_type": "Float",
+                              "value": "2.5"
+                            },
+                            {
+                              "param_type": "Float",
+                              "value": "0.80"
+                            },
+                            {
+                              "param_type": "Int32",
+                              "value": "3"
+                            },
+                            {
+                              "param_type": "Int32",
+                              "value": "9999"
+                            },
+                            {
+                              "param_type": "EntityReferenceList",
+                              "value": [
+                                "1082130447",
+                                "1082130453"
+                              ]
+                            },
+                            {
+                              "param_type": "Int32List",
+                              "value": [
+                                "1",
+                                "1"
+                              ]
+                            }
+                          ]
+                        }
+                      },
+                      {
+                        "param_type": "Struct",
+                        "value": {
+                          "structId": "1077936129",
+                          "type": "Struct",
+                          "value": [
+                            {
+                              "param_type": "Int32",
+                              "value": "1073741827"
+                            },
+                            {
+                              "param_type": "Bool",
+                              "value": "False"
+                            },
+                            {
+                              "param_type": "Float",
+                              "value": "2"
+                            },
+                            {
+                              "param_type": "Float",
+                              "value": "2"
+                            },
+                            {
+                              "param_type": "Float",
+                              "value": "0.90"
+                            },
+                            {
+                              "param_type": "Int32",
+                              "value": "4"
+                            },
+                            {
+                              "param_type": "Int32",
+                              "value": "9999"
+                            },
+                            {
+                              "param_type": "EntityReferenceList",
+                              "value": [
+                                "1082130438",
+                                "1082130439",
+                                "1082130445"
+                              ]
+                            },
+                            {
+                              "param_type": "Int32List",
+                              "value": [
+                                "2",
+                                "2",
+                                "3"
+                              ]
+                            }
+                          ]
+                        }
+                      },
+                      {
+                        "param_type": "Struct",
+                        "value": {
+                          "structId": "1077936129",
+                          "type": "Struct",
+                          "value": [
+                            {
+                              "param_type": "Int32",
+                              "value": "1073741829"
+                            },
+                            {
+                              "param_type": "Bool",
+                              "value": "False"
+                            },
+                            {
+                              "param_type": "Float",
+                              "value": "14"
+                            },
+                            {
+                              "param_type": "Float",
+                              "value": "2.5"
+                            },
+                            {
+                              "param_type": "Float",
+                              "value": "0.88"
+                            },
+                            {
+                              "param_type": "Int32",
+                              "value": "3"
+                            },
+                            {
+                              "param_type": "Int32",
+                              "value": "9999"
+                            },
+                            {
+                              "param_type": "EntityReferenceList",
+                              "value": [
+                                "1082130452",
+                                "1082130455",
+                                "1082130441"
+                              ]
+                            },
+                            {
+                              "param_type": "Int32List",
+                              "value": [
+                                "2",
+                                "2",
+                                "1"
+                              ]
+                            }
+                          ]
+                        }
+                      },
+                      {
+                        "param_type": "Struct",
+                        "value": {
+                          "structId": "1077936129",
+                          "type": "Struct",
+                          "value": [
+                            {
+                              "param_type": "Int32",
+                              "value": "1073741830"
+                            },
+                            {
+                              "param_type": "Bool",
+                              "value": "False"
+                            },
+                            {
+                              "param_type": "Float",
+                              "value": "16"
+                            },
+                            {
+                              "param_type": "Float",
+                              "value": "2.5"
+                            },
+                            {
+                              "param_type": "Float",
+                              "value": "0.88"
+                            },
+                            {
+                              "param_type": "Int32",
+                              "value": "3"
+                            },
+                            {
+                              "param_type": "Int32",
+                              "value": "9999"
+                            },
+                            {
+                              "param_type": "EntityReferenceList",
+                              "value": [
+                                "1082130439",
+                                "1082130442"
+                              ]
+                            },
+                            {
+                              "param_type": "Int32List",
+                              "value": [
+                                "2",
+                                "1"
+                              ]
+                            }
+                          ]
+                        }
+                      }
+                    ]
+                  }
+                },
+                {
+                  "param_type": "Struct",
+                  "value": {
+                    "structId": "1077936129",
+                    "type": "Struct",
+                    "value": [
+                      {
+                        "param_type": "Int32",
+                        "value": "1073741832"
+                      },
+                      {
+                        "param_type": "Bool",
+                        "value": "True"
+                      },
+                      {
+                        "param_type": "Float",
+                        "value": "0.03"
+                      },
+                      {
+                        "param_type": "Float",
+                        "value": "1"
+                      },
+                      {
+                        "param_type": "Float",
+                        "value": "1"
+                      },
+                      {
+                        "param_type": "Int32",
+                        "value": "1"
+                      },
+                      {
+                        "param_type": "Int32",
+                        "value": "1"
+                      },
+                      {
+                        "param_type": "EntityReferenceList",
+                        "value": [
+                          "1082130449"
+                        ]
+                      },
+                      {
+                        "param_type": "Int32List",
+                        "value": [
+                          "1"
+                        ]
+                      }
+                    ]
+                  }
+                },
+                {
+                  "param_type": "Int32",
+                  "value": "20"
+                }
+              ]
+            }
+          },
+          {
+            "param_type": "Struct",
+            "value": {
+              "structId": "1077936130",
+              "type": "Struct",
+              "value": [
+                {
+                  "param_type": "String",
+                  "value": "丘丘部落·第九关"
+                },
+                {
+                  "param_type": "StructList",
+                  "value": {
+                    "structId": "1077936129",
+                    "value": [
+                      {
+                        "param_type": "Struct",
+                        "value": {
+                          "structId": "1077936129",
+                          "type": "Struct",
+                          "value": [
+                            {
+                              "param_type": "Int32",
+                              "value": "1073741826"
+                            },
+                            {
+                              "param_type": "Bool",
+                              "value": "False"
+                            },
+                            {
+                              "param_type": "Float",
+                              "value": "9"
+                            },
+                            {
+                              "param_type": "Float",
+                              "value": "3"
+                            },
+                            {
+                              "param_type": "Float",
+                              "value": "0.80"
+                            },
+                            {
+                              "param_type": "Int32",
+                              "value": "2"
+                            },
+                            {
+                              "param_type": "Int32",
+                              "value": "9999"
+                            },
+                            {
+                              "param_type": "EntityReferenceList",
+                              "value": [
+                                "1082130440",
+                                "1082130453"
+                              ]
+                            },
+                            {
+                              "param_type": "Int32List",
+                              "value": [
+                                "2",
+                                "1"
+                              ]
+                            }
+                          ]
+                        }
+                      },
+                      {
+                        "param_type": "Struct",
+                        "value": {
+                          "structId": "1077936129",
+                          "type": "Struct",
+                          "value": [
+                            {
+                              "param_type": "Int32",
+                              "value": "1073741827"
+                            },
+                            {
+                              "param_type": "Bool",
+                              "value": "False"
+                            },
+                            {
+                              "param_type": "Float",
+                              "value": "2"
+                            },
+                            {
+                              "param_type": "Float",
+                              "value": "2.5"
+                            },
+                            {
+                              "param_type": "Float",
+                              "value": "0.85"
+                            },
+                            {
+                              "param_type": "Int32",
+                              "value": "3"
+                            },
+                            {
+                              "param_type": "Int32",
+                              "value": "9999"
+                            },
+                            {
+                              "param_type": "EntityReferenceList",
+                              "value": [
+                                "1082130438",
+                                "1082130439",
+                                "1082130451"
+                              ]
+                            },
+                            {
+                              "param_type": "Int32List",
+                              "value": [
+                                "2",
+                                "2",
+                                "1"
+                              ]
+                            }
+                          ]
+                        }
+                      },
+                      {
+                        "param_type": "Struct",
+                        "value": {
+                          "structId": "1077936129",
+                          "type": "Struct",
+                          "value": [
+                            {
+                              "param_type": "Int32",
+                              "value": "1073741829"
+                            },
+                            {
+                              "param_type": "Bool",
+                              "value": "False"
+                            },
+                            {
+                              "param_type": "Float",
+                              "value": "12"
+                            },
+                            {
+                              "param_type": "Float",
+                              "value": "3"
+                            },
+                            {
+                              "param_type": "Float",
+                              "value": "0.80"
+                            },
+                            {
+                              "param_type": "Int32",
+                              "value": "2"
+                            },
+                            {
+                              "param_type": "Int32",
+                              "value": "9999"
+                            },
+                            {
+                              "param_type": "EntityReferenceList",
+                              "value": [
+                                "1082130446",
+                                "1082130452",
+                                "1082130441"
+                              ]
+                            },
+                            {
+                              "param_type": "Int32List",
+                              "value": [
+                                "2",
+                                "2",
+                                "1"
+                              ]
+                            }
+                          ]
+                        }
+                      },
+                      {
+                        "param_type": "Struct",
+                        "value": {
+                          "structId": "1077936129",
+                          "type": "Struct",
+                          "value": [
+                            {
+                              "param_type": "Int32",
+                              "value": "1073741830"
+                            },
+                            {
+                              "param_type": "Bool",
+                              "value": "False"
+                            },
+                            {
+                              "param_type": "Float",
+                              "value": "15"
+                            },
+                            {
+                              "param_type": "Float",
+                              "value": "3"
+                            },
+                            {
+                              "param_type": "Float",
+                              "value": "0.85"
+                            },
+                            {
+                              "param_type": "Int32",
+                              "value": "3"
+                            },
+                            {
+                              "param_type": "Int32",
+                              "value": "9999"
+                            },
+                            {
+                              "param_type": "EntityReferenceList",
+                              "value": [
+                                "1082130445",
+                                "1082130458",
+                                "1082130442"
+                              ]
+                            },
+                            {
+                              "param_type": "Int32List",
+                              "value": [
+                                "1",
+                                "1",
+                                "1"
+                              ]
+                            }
+                          ]
+                        }
+                      },
+                      {
+                        "param_type": "Struct",
+                        "value": {
+                          "structId": "1077936129",
+                          "type": "Struct",
+                          "value": [
+                            {
+                              "param_type": "Int32",
+                              "value": "1073741831"
+                            },
+                            {
+                              "param_type": "Bool",
+                              "value": "False"
+                            },
+                            {
+                              "param_type": "Float",
+                              "value": "18"
+                            },
+                            {
+                              "param_type": "Float",
+                              "value": "3"
+                            },
+                            {
+                              "param_type": "Float",
+                              "value": "0.96"
+                            },
+                            {
+                              "param_type": "Int32",
+                              "value": "3"
+                            },
+                            {
+                              "param_type": "Int32",
+                              "value": "9999"
+                            },
+                            {
+                              "param_type": "EntityReferenceList",
+                              "value": [
+                                "1082130453",
+                                "1082130456"
+                              ]
+                            },
+                            {
+                              "param_type": "Int32List",
+                              "value": [
+                                "1",
+                                "1"
+                              ]
+                            }
+                          ]
+                        }
+                      }
+                    ]
+                  }
+                },
+                {
+                  "param_type": "Struct",
+                  "value": {
+                    "structId": "1077936129",
+                    "type": "Struct",
+                    "value": [
+                      {
+                        "param_type": "Int32",
+                        "value": "1073741832"
+                      },
+                      {
+                        "param_type": "Bool",
+                        "value": "True"
+                      },
+                      {
+                        "param_type": "Float",
+                        "value": "0.03"
+                      },
+                      {
+                        "param_type": "Float",
+                        "value": "1"
+                      },
+                      {
+                        "param_type": "Float",
+                        "value": "1"
+                      },
+                      {
+                        "param_type": "Int32",
+                        "value": "1"
+                      },
+                      {
+                        "param_type": "Int32",
+                        "value": "1"
+                      },
+                      {
+                        "param_type": "EntityReferenceList",
+                        "value": [
+                          "1082130444"
+                        ]
+                      },
+                      {
+                        "param_type": "Int32List",
+                        "value": [
+                          "1"
+                        ]
+                      }
+                    ]
+                  }
+                },
+                {
+                  "param_type": "Int32",
+                  "value": "23"
+                }
+              ]
+            }
+          },
+          {
+            "param_type": "Struct",
+            "value": {
+              "structId": "1077936130",
+              "type": "Struct",
+              "value": [
+                {
+                  "param_type": "String",
+                  "value": "丘丘部落·最终关"
+                },
+                {
+                  "param_type": "StructList",
+                  "value": {
+                    "structId": "1077936129",
+                    "value": [
+                      {
+                        "param_type": "Struct",
+                        "value": {
+                          "structId": "1077936129",
+                          "type": "Struct",
+                          "value": [
+                            {
+                              "param_type": "Int32",
+                              "value": "1073741826"
+                            },
+                            {
+                              "param_type": "Bool",
+                              "value": "False"
+                            },
+                            {
+                              "param_type": "Float",
+                              "value": "9"
+                            },
+                            {
+                              "param_type": "Float",
+                              "value": "3"
+                            },
+                            {
+                              "param_type": "Float",
+                              "value": "0.75"
+                            },
+                            {
+                              "param_type": "Int32",
+                              "value": "2"
+                            },
+                            {
+                              "param_type": "Int32",
+                              "value": "9999"
+                            },
+                            {
+                              "param_type": "EntityReferenceList",
+                              "value": [
+                                "1082130447",
+                                "1082130451"
+                              ]
+                            },
+                            {
+                              "param_type": "Int32List",
+                              "value": [
+                                "1",
+                                "1"
+                              ]
+                            }
+                          ]
+                        }
+                      },
+                      {
+                        "param_type": "Struct",
+                        "value": {
+                          "structId": "1077936129",
+                          "type": "Struct",
+                          "value": [
+                            {
+                              "param_type": "Int32",
+                              "value": "1073741827"
+                            },
+                            {
+                              "param_type": "Bool",
+                              "value": "False"
+                            },
+                            {
+                              "param_type": "Float",
+                              "value": "2"
+                            },
+                            {
+                              "param_type": "Float",
+                              "value": "2.5"
+                            },
+                            {
+                              "param_type": "Float",
+                              "value": "0.90"
+                            },
+                            {
+                              "param_type": "Int32",
+                              "value": "4"
+                            },
+                            {
+                              "param_type": "Int32",
+                              "value": "9999"
+                            },
+                            {
+                              "param_type": "EntityReferenceList",
+                              "value": [
+                                "1082130438",
+                                "1082130439",
+                                "1082130445"
+                              ]
+                            },
+                            {
+                              "param_type": "Int32List",
+                              "value": [
+                                "2",
+                                "2",
+                                "1"
+                              ]
+                            }
+                          ]
+                        }
+                      },
+                      {
+                        "param_type": "Struct",
+                        "value": {
+                          "structId": "1077936129",
+                          "type": "Struct",
+                          "value": [
+                            {
+                              "param_type": "Int32",
+                              "value": "1073741829"
+                            },
+                            {
+                              "param_type": "Bool",
+                              "value": "False"
+                            },
+                            {
+                              "param_type": "Float",
+                              "value": "12"
+                            },
+                            {
+                              "param_type": "Float",
+                              "value": "3"
+                            },
+                            {
+                              "param_type": "Float",
+                              "value": "0.85"
+                            },
+                            {
+                              "param_type": "Int32",
+                              "value": "3"
+                            },
+                            {
+                              "param_type": "Int32",
+                              "value": "9999"
+                            },
+                            {
+                              "param_type": "EntityReferenceList",
+                              "value": [
+                                "1082130446",
+                                "1082130452",
+                                "1082130442"
+                              ]
+                            },
+                            {
+                              "param_type": "Int32List",
+                              "value": [
+                                "1",
+                                "1",
+                                "1"
+                              ]
+                            }
+                          ]
+                        }
+                      },
+                      {
+                        "param_type": "Struct",
+                        "value": {
+                          "structId": "1077936129",
+                          "type": "Struct",
+                          "value": [
+                            {
+                              "param_type": "Int32",
+                              "value": "1073741830"
+                            },
+                            {
+                              "param_type": "Bool",
+                              "value": "False"
+                            },
+                            {
+                              "param_type": "Float",
+                              "value": "15"
+                            },
+                            {
+                              "param_type": "Float",
+                              "value": "3"
+                            },
+                            {
+                              "param_type": "Float",
+                              "value": "0.84"
+                            },
+                            {
+                              "param_type": "Int32",
+                              "value": "3"
+                            },
+                            {
+                              "param_type": "Int32",
+                              "value": "9999"
+                            },
+                            {
+                              "param_type": "EntityReferenceList",
+                              "value": [
+                                "1082130445",
+                                "1082130447",
+                                "1082130459"
+                              ]
+                            },
+                            {
+                              "param_type": "Int32List",
+                              "value": [
+                                "1",
+                                "1",
+                                "2"
+                              ]
+                            }
+                          ]
+                        }
+                      },
+                      {
+                        "param_type": "Struct",
+                        "value": {
+                          "structId": "1077936129",
+                          "type": "Struct",
+                          "value": [
+                            {
+                              "param_type": "Int32",
+                              "value": "1073741831"
+                            },
+                            {
+                              "param_type": "Bool",
+                              "value": "False"
+                            },
+                            {
+                              "param_type": "Float",
+                              "value": "18"
+                            },
+                            {
+                              "param_type": "Float",
+                              "value": "3"
+                            },
+                            {
+                              "param_type": "Float",
+                              "value": "0.84"
+                            },
+                            {
+                              "param_type": "Int32",
+                              "value": "2"
+                            },
+                            {
+                              "param_type": "Int32",
+                              "value": "9999"
+                            },
+                            {
+                              "param_type": "EntityReferenceList",
+                              "value": [
+                                "1082130452",
+                                "1082130457"
+                              ]
+                            },
+                            {
+                              "param_type": "Int32List",
+                              "value": [
+                                "1",
+                                "1"
+                              ]
+                            }
+                          ]
+                        }
+                      }
+                    ]
+                  }
+                },
+                {
+                  "param_type": "Struct",
+                  "value": {
+                    "structId": "1077936129",
+                    "type": "Struct",
+                    "value": [
+                      {
+                        "param_type": "Int32",
+                        "value": "1073741832"
+                      },
+                      {
+                        "param_type": "Bool",
+                        "value": "True"
+                      },
+                      {
+                        "param_type": "Float",
+                        "value": "0.03"
+                      },
+                      {
+                        "param_type": "Float",
+                        "value": "1"
+                      },
+                      {
+                        "param_type": "Float",
+                        "value": "1"
+                      },
+                      {
+                        "param_type": "Int32",
+                        "value": "1"
+                      },
+                      {
+                        "param_type": "Int32",
+                        "value": "1"
+                      },
+                      {
+                        "param_type": "EntityReferenceList",
+                        "value": [
+                          "1082130450"
+                        ]
+                      },
+                      {
+                        "param_type": "Int32List",
+                        "value": [
+                          "1"
+                        ]
+                      }
+                    ]
+                  }
+                },
+                {
+                  "param_type": "Int32",
+                  "value": "27"
+                }
+              ]
+            }
+          }
+        ]
+      }
+    },
+    {
+      "param_type": "Struct",
+      "value": {
+        "structId": "1077936130",
+        "type": "Struct",
+        "value": [
+          {
+            "param_type": "String",
+            "value": ""
+          },
+          {
+            "param_type": "StructList",
+            "value": {
+              "structId": "1077936129",
+              "value": []
+            }
+          },
+          {
+            "param_type": "Struct",
+            "value": {
+              "structId": "1077936129",
+              "type": "Struct",
+              "value": [
+                {
+                  "param_type": "Int32",
+                  "value": "0"
+                },
+                {
+                  "param_type": "Bool",
+                  "value": "False"
+                },
+                {
+                  "param_type": "Float",
+                  "value": "0.03"
+                },
+                {
+                  "param_type": "Float",
+                  "value": "0.00"
+                },
+                {
+                  "param_type": "Float",
+                  "value": "0.00"
+                },
+                {
+                  "param_type": "Int32",
+                  "value": "0"
+                },
+                {
+                  "param_type": "Int32",
+                  "value": "0"
+                },
+                {
+                  "param_type": "EntityReferenceList",
+                  "value": []
+                },
+                {
+                  "param_type": "Int32List",
+                  "value": []
+                }
+              ]
+            }
+          },
+          {
+            "param_type": "Int32",
+            "value": "0"
+          }
+        ]
+      }
+    },
+    {
+      "param_type": "Int32",
+      "value": "0"
+    }
+  ]
+}

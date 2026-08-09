@@ -1,0 +1,51 @@
+{ 
+   "type" : "Struct", 
+   "struct_ype" : "basic", 
+   "name" : "天赋配置", 
+   "value" : [ 
+      { 
+         "key" : "天赋名称", 
+         "param_type" : "String", 
+         "value" : { 
+            "param_type" : "String", 
+            "value" : ""
+         }
+      }, 
+      { 
+         "key" : "天赋总介绍", 
+         "param_type" : "String", 
+         "value" : { 
+            "param_type" : "String", 
+            "value" : ""
+         }
+      }, 
+      { 
+         "key" : "当前天赋等级", 
+         "param_type" : "Int32", 
+         "value" : { 
+            "param_type" : "Int32", 
+            "value" : "0"
+         }
+      }, 
+      { 
+         "key" : "最高天赋等级", 
+         "param_type" : "Int32", 
+         "value" : { 
+            "param_type" : "Int32", 
+            "value" : "0"
+         }
+      }, 
+      { 
+         "key" : "天赋等级配置", 
+         "param_type" : "StructList", 
+         "value" : { 
+            "param_type" : "StructList", 
+            "value" : { 
+               "structId" : "1077936133", 
+               "value" : [ 
+               ]
+            }
+         }
+      }
+   ]
+}

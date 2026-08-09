@@ -1,0 +1,92 @@
+{ 
+   "type" : "Struct", 
+   "struct_ype" : "basic", 
+   "name" : "关卡配置", 
+   "value" : [ 
+      { 
+         "key" : "普通模式", 
+         "param_type" : "StructList", 
+         "value" : { 
+            "param_type" : "StructList", 
+            "value" : { 
+               "structId" : "1077936130", 
+               "value" : [ 
+               ]
+            }
+         }
+      }, 
+      { 
+         "key" : "无尽模式", 
+         "param_type" : "Struct", 
+         "value" : { 
+            "param_type" : "Struct", 
+            "value" : { 
+               "structId" : "1077936138", 
+               "type" : "Struct", 
+               "value" : [ 
+                  { 
+                     "param_type" : "Int32", 
+                     "value" : "72"
+                  }, 
+                  { 
+                     "param_type" : "Int32", 
+                     "value" : "2"
+                  }, 
+                  { 
+                     "param_type" : "Int32", 
+                     "value" : "100"
+                  }, 
+                  { 
+                     "param_type" : "Float", 
+                     "value" : "0.945"
+                  }, 
+                  { 
+                     "param_type" : "Float", 
+                     "value" : "2.40"
+                  }, 
+                  { 
+                     "param_type" : "Float", 
+                     "value" : "0.00"
+                  }, 
+                  { 
+                     "param_type" : "Int32", 
+                     "value" : "24"
+                  }, 
+                  { 
+                     "param_type" : "Int32", 
+                     "value" : "5"
+                  }, 
+                  { 
+                     "param_type" : "StructList", 
+                     "value" : { 
+                        "structId" : "1077936137", 
+                        "value" : [ 
+                        ]
+                     }
+                  }, 
+                  { 
+                     "param_type" : "Int32", 
+                     "value" : "3"
+                  }, 
+                  { 
+                     "param_type" : "Int32", 
+                     "value" : "0"
+                  }, 
+                  { 
+                     "param_type" : "Int32", 
+                     "value" : "0"
+                  }
+               ]
+            }
+         }
+      }, 
+      { 
+         "key" : "普通模式已通关关卡数", 
+         "param_type" : "Int32", 
+         "value" : { 
+            "param_type" : "Int32", 
+            "value" : "0"
+         }
+      }
+   ]
+}

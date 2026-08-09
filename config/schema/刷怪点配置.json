@@ -1,0 +1,81 @@
+{ 
+   "type" : "Struct", 
+   "struct_ype" : "basic", 
+   "name" : "刷怪点配置", 
+   "value" : [ 
+      { 
+         "key" : "刷怪点索引", 
+         "param_type" : "Int32", 
+         "value" : { 
+            "param_type" : "Int32", 
+            "value" : "0"
+         }
+      }, 
+      { 
+         "key" : "是否BOSS刷怪点", 
+         "param_type" : "Bool", 
+         "value" : { 
+            "param_type" : "Bool", 
+            "value" : "False"
+         }
+      }, 
+      { 
+         "key" : "首次刷怪延迟", 
+         "param_type" : "Float", 
+         "value" : { 
+            "param_type" : "Float", 
+            "value" : "0.03"
+         }
+      }, 
+      { 
+         "key" : "刷怪间隔", 
+         "param_type" : "Float", 
+         "value" : { 
+            "param_type" : "Float", 
+            "value" : "6.00"
+         }
+      }, 
+      { 
+         "key" : "刷怪概率", 
+         "param_type" : "Float", 
+         "value" : { 
+            "param_type" : "Float", 
+            "value" : "0.80"
+         }
+      }, 
+      { 
+         "key" : "刷出造物上限", 
+         "param_type" : "Int32", 
+         "value" : { 
+            "param_type" : "Int32", 
+            "value" : "5"
+         }
+      }, 
+      { 
+         "key" : "刷怪次数上限", 
+         "param_type" : "Int32", 
+         "value" : { 
+            "param_type" : "Int32", 
+            "value" : "9999"
+         }
+      }, 
+      { 
+         "key" : "造物类型列表", 
+         "param_type" : "EntityReferenceList", 
+         "value" : { 
+            "param_type" : "EntityReferenceList", 
+            "value" : [ 
+            ]
+         }
+      }, 
+      { 
+         "key" : "造物权重列表", 
+         "param_type" : "Int32List", 
+         "value" : { 
+            "param_type" : "Int32List", 
+            "value" : [ 
+            ]
+         }
+      }
+   ]
+}

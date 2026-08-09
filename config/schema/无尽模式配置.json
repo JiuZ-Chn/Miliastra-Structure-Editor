@@ -1,0 +1,107 @@
+{ 
+   "type" : "Struct", 
+   "struct_ype" : "basic", 
+   "name" : "无尽模式配置", 
+   "value" : [ 
+      { 
+         "key" : "起始敌方等级", 
+         "param_type" : "Int32", 
+         "value" : { 
+            "param_type" : "Int32", 
+            "value" : "72"
+         }
+      }, 
+      { 
+         "key" : "每层敌方等级增量", 
+         "param_type" : "Int32", 
+         "value" : { 
+            "param_type" : "Int32", 
+            "value" : "2"
+         }
+      }, 
+      { 
+         "key" : "敌方等级上限", 
+         "param_type" : "Int32", 
+         "value" : { 
+            "param_type" : "Int32", 
+            "value" : "100"
+         }
+      }, 
+      { 
+         "key" : "封顶后每层刷怪间隔系数", 
+         "param_type" : "Float", 
+         "value" : { 
+            "param_type" : "Float", 
+            "value" : "0.945"
+         }
+      }, 
+      { 
+         "key" : "刷怪间隔下限", 
+         "param_type" : "Float", 
+         "value" : { 
+            "param_type" : "Float", 
+            "value" : "2.40"
+         }
+      }, 
+      { 
+         "key" : "每层刷出造物上限增量", 
+         "param_type" : "Float", 
+         "value" : { 
+            "param_type" : "Float", 
+            "value" : "0.00"
+         }
+      }, 
+      { 
+         "key" : "全场并发上限", 
+         "param_type" : "Int32", 
+         "value" : { 
+            "param_type" : "Int32", 
+            "value" : "24"
+         }
+      }, 
+      { 
+         "key" : "BOSS层间隔", 
+         "param_type" : "Int32", 
+         "value" : { 
+            "param_type" : "Int32", 
+            "value" : "5"
+         }
+      }, 
+      { 
+         "key" : "布局池", 
+         "param_type" : "StructList", 
+         "value" : { 
+            "param_type" : "StructList", 
+            "value" : { 
+               "structId" : "1077936137", 
+               "value" : [ 
+               ]
+            }
+         }
+      }, 
+      { 
+         "key" : "布局冷却层数", 
+         "param_type" : "Int32", 
+         "value" : { 
+            "param_type" : "Int32", 
+            "value" : "3"
+         }
+      }, 
+      { 
+         "key" : "当前层数", 
+         "param_type" : "Int32", 
+         "value" : { 
+            "param_type" : "Int32", 
+            "value" : "0"
+         }
+      }, 
+      { 
+         "key" : "历史最高层数", 
+         "param_type" : "Int32", 
+         "value" : { 
+            "param_type" : "Int32", 
+            "value" : "0"
+         }
+      }
+   ]
+}

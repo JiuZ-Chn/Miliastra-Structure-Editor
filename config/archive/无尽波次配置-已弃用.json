@@ -1,0 +1,57 @@
+{ 
+   "type" : "Struct", 
+   "struct_ype" : "basic", 
+   "name" : "无尽波次配置", 
+   "value" : [ 
+      { 
+         "key" : "波次名称", 
+         "param_type" : "String", 
+         "value" : { 
+            "param_type" : "String", 
+            "value" : ""
+         }
+      }, 
+      { 
+         "key" : "抽取权重", 
+         "param_type" : "Int32", 
+         "value" : { 
+            "param_type" : "Int32", 
+            "value" : "10"
+         }
+      }, 
+      { 
+         "key" : "造物类型列表", 
+         "param_type" : "EntityReferenceList", 
+         "value" : { 
+            "param_type" : "EntityReferenceList", 
+            "value" : [ 
+            ]
+         }
+      }, 
+      { 
+         "key" : "造物数量列表", 
+         "param_type" : "Int32List", 
+         "value" : { 
+            "param_type" : "Int32List", 
+            "value" : [ 
+            ]
+         }
+      }, 
+      { 
+         "key" : "进场刷怪点数", 
+         "param_type" : "Int32", 
+         "value" : { 
+            "param_type" : "Int32", 
+            "value" : "0"
+         }
+      }, 
+      { 
+         "key" : "同波次连续抽取上限", 
+         "param_type" : "Int32", 
+         "value" : { 
+            "param_type" : "Int32", 
+            "value" : "2"
+         }
+      }
+   ]
+}
